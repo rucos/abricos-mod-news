@@ -1,18 +1,25 @@
 <?php 
 /**
-* @version $Id: module.php 3 2009-06-09 13:41:52Z roosit $
-* @package CMSBrick
-* @copyright Copyright (C) 2008 CMSBrick. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Модуль "Новости"
+ * 
+ * @version $Id: module.php 3 2009-06-09 13:41:52Z roosit $
+ * @package CMSBrick
+ * @subpackage News
+ * @copyright Copyright (C) 2008 CMSBrick. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @author Alexander Kuzmin (roosit@cmsbrick.ru)
+ */
 
-global $cms;
-
-$cms->modules->GetModule('comment');
-
+CMSRegistry::$instance->modules->GetModule('comment');
 $modNews = new CMSModuleNews();
-$cms->modules->Register($modNews);
 
+CMSRegistry::$instance->modules->Register($modNews);
+
+/**
+ * Модуль "Новости" 
+ * @package CMSBrick
+ * @subpackage News
+ */
 class CMSModuleNews extends CMSModule {
 	
 	/**
@@ -36,7 +43,7 @@ class CMSModuleNews extends CMSModule {
 	 */
 	public $newsid = 0;
 	
-	public function __construct(){
+	public function CMSModuleNews(){
 		$this->version = "1.0.1";
 		$this->name = "news";
 		$this->takelink = "news";
@@ -124,6 +131,11 @@ class CMSModuleNews extends CMSModule {
 	}
 }
 
+/**
+ * Набор статичных функций запросов к базе данных 
+ * @package CMSBrick
+ * @subpackage News
+ */
 class CMSQNews {
 
 	public static function NewsPublicCount(CMSDatabase $db, $retvalue = false){
