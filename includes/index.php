@@ -2,7 +2,7 @@
 /**
  * Вывод списка новостей
  * 
- * @version $Id: index.php 3 2009-06-09 13:41:52Z roosit $
+ * @version $Id$
  * @package CMSBrick
  * @subpackage News
  * @copyright Copyright (C) 2008 CMSBrick. All rights reserved.
