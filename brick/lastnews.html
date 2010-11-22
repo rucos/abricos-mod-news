@@ -1,0 +1,21 @@
+<!--[*]
+[script]lastnews.php[/script]
+[mcss=news]news.css[/mcss]
+[bkvar=result][/bkvar]
+[bkvar=row]
+	<li>
+		<span class="date">{v#date}</span>
+		<a class="title" href="{v#link}">{v#title}</a>
+		<span class="intro">{v#intro}</span>
+	</li>
+[/bkvar]
+[bkvar=fullnewslink]/news/[/bkvar]
+[p=count]3[/p]
+[p=hideintro][/p]
+[*]-->
+<ul class="lastnews">
+	[bkvar]result[/bkvar]
+	<li class="fullnews">
+		<a href="[bkvar]fullnewslink[/bkvar]">{#news.pubcolumnblock_allnews}</a>
+	</li>
+</ul>

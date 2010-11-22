@@ -1,22 +1,26 @@
 <!--[*]
 [tt=main][/tt]
+
 [script]index.php[/script]
+[mcss=sitemap]sitemap.css[/mcss]
+[mcss=news]news.css[/mcss]
 
 [ph=news:page_count]10[/ph]
 [ph=news:date_format]Y-m-d[/ph]
 
 [bkvar=lst][/bkvar]
-[bkvar=r]
-<div class="bk_newsblock">
-	<span class="newsdate">#d#</span>
-  <a class="newstitle" href="#l#">#h#</a>
-  <p class="newssubtitle">#s#</p>
-</div>
+[bkvar=row]
+	<dt>{v#date}</dt>
+	<dd>
+		<a class="title" href="{v#link}">{v#title}</a>
+		{v#intro}
+	</dd>
 [/bkvar]
 
 [*]-->
-<div class="mod-news">
-	<h1>{#news.title}</h1>
-	[bkvar]lst[/bkvar]
-</div>
-[mod]sitemap:p_paginator[/mod]
+<table style="width: 100%;"><tbody><tr>
+	<td><h1>{#news.title}</h1></td>
+	<td style="text-align: right;"><span class="newsblock-rssicon"></span></td>
+</tr></tbody></table>
+<dl class="newslist">[bkvar]lst[/bkvar]</dl>
+[mod]sitemap:paginator[/mod]

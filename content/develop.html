@@ -25,11 +25,11 @@
 	YAHOO.util.Event.onDOMReady(function () {
 		
         YAHOO.util.Event.addListener("btn_showNewsListPanel", "click", function(){
-    		Brick.Component.API.fire('news', 'api', 'showNewsListPanel');
+    		Brick.Component.API.fire('news', 'manager', 'showNewsListPanel');
 		});
 
 		YAHOO.util.Event.addListener("btn_showNewsEditorPanel_new", "click", function(){
-			Brick.Component.API.fire('news', 'api', 'showEditorPanel');
+			Brick.Component.API.fire('news', 'manager', 'showEditorPanel');
 		});
 		
 		YAHOO.util.Event.addListener("btn_showNewsEditorPanel", "click", function(){
@@ -41,7 +41,7 @@
 			    return;
 			} 
 			
-			Brick.Component.API.fire('news', 'api', 'showEditorPanel', newsId);
+			Brick.Component.API.fire('news', 'editor', 'showEditorPanel', newsId);
 		});
 		
     });

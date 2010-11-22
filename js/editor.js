@@ -11,10 +11,9 @@
 
 var Component = new Brick.Component();
 Component.requires = {
-	yahoo: ["tabview"],
+	yahoo: ['tabview', 'dragdrop'],
 	mod:[
 	     {name: 'sys', files: ['editor.js','container.js','data.js','form.js']}
-	     // {name: 'filemanager', files: ['api.js']}
     ]
 };
 Component.entryPoint = function(){
@@ -22,8 +21,6 @@ Component.entryPoint = function(){
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
 
-	var __selfCT = this;
-	
 	var NS = this.namespace, 
 		TM = this.template.build(), 
 		T = TM.data,
@@ -31,10 +28,10 @@ Component.entryPoint = function(){
 	
 	var API = NS.API;
 	
-	if (!Brick.objectExists('Brick.mod.news.data')){
-		Brick.mod.news.data = new Brick.util.data.byid.DataSet('news');
+	if (!NS.data){
+		NS.data = new Brick.util.data.byid.DataSet('news');
 	}
-	var DATA = Brick.mod.news.data;
+	var DATA = NS.data;
 	
 	Brick.util.CSS.update(T['css']);
 
@@ -63,11 +60,11 @@ Component.entryPoint = function(){
 			var Editor = Brick.widget.Editor;
 
 			this.editorIntro = new Editor(TId['editor']['bodyint'], {
-				width: '550px', height: '150px', 'mode': Editor.MODE_VISUAL
+				'mode': Editor.MODE_VISUAL
 			});
 
 			this.editorBody = new Editor(TId['editor']['bodyman'], {
-				width: '750px', height: '250px', 'mode': Editor.MODE_VISUAL
+				'mode': Editor.MODE_VISUAL
 			});
 			
 			// менеджер файлов
@@ -191,12 +188,17 @@ Component.entryPoint = function(){
 	 			tableNewsList.clear();
 	 			DATA.get('newscount').clear();
 	 		}
-			API.dsRequest();
+			DATA.request();
 			this.close();
 		}
 	});
 	
-	Brick.mod.news.EditorPanel = EditorPanel;
+	NS.EditorPanel = EditorPanel;
 	
+	API.showEditorPanel = function(newsId){
+		var widget = new NS.EditorPanel(newsId);
+		DATA.request(true);
+		return widget;
+	};
 	
 };

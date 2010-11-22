@@ -11,36 +11,37 @@
  */
 
 $brick = Brick::$builder->brick;
-$modNews = Brick::$modules->GetModule('news');
+
+$tag = CMSRegistry::$instance->adress->dir[1];
+$page = intval(substr($tag, 4, strlen($tag)-4));
+
+$mod = CMSRegistry::$instance->modules->GetModule('news');
+$manager = $mod->GetManager();
 
 // кол-во новостей на странице
 $limit = Brick::$builder->phrase->Get('news', 'page_count', 10);
 $dateFormat = Brick::$builder->phrase->Get('news', 'date_format', "Y-m-d");
-$page = $modNews->page;
 
-$baseUrl = "/".$modNews->takelink."/";
+$baseUrl = "/".$mod->takelink."/";
 
-$tNewsRow = $brick->param->var['r'];
 $lst = "";
-$rows = CMSQNews::NewsPublicList(Brick::$db, $page, $limit);
+$rows = $manager->NewsList($page, $limit);
 
 while (($row = Brick::$db->fetch_array($rows))){
-	$t = $tNewsRow;
-	$link = $baseUrl.$row['id']."/";
-	
-	$t = str_replace("#d#", date($dateFormat, $row['dp']), $t);
-	$t = str_replace("#l#", $link, $t);
-	$t = str_replace("#h#", $row['tl'], $t);
-	$t = str_replace("#s#", $row['intro'], $t);
-	$lst .= $t;
+	$lst .= Brick::ReplaceVarByData($brick->param->var['row'], array(
+		"date" => date($dateFormat, $row['dp']),
+		"link" => $baseUrl.$row['id']."/",
+		"title" => $row['tl'],
+		"intro" => $row['intro']
+	));
 }
 
 $brick->param->var['lst'] = $lst;
 
-$newsCount = CMSQNews::NewsPublicCount(Brick::$db, true);
+$newsCount = $manager->NewsCount(true);
 
 // подгрузка кирпича пагинатора с параметрами
-Brick::$builder->LoadBrickS('sitemap', 'p_paginator', $brick, array("p" => array(
+Brick::$builder->LoadBrickS('sitemap', 'paginator', $brick, array("p" => array(
 	"total" => $newsCount,
 	"page" => $page,
 	"perpage" => $limit,

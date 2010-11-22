@@ -10,43 +10,21 @@
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
 
-if (!Brick::$session->IsAdminMode()){ return; }
 $brick = Brick::$builder->brick;
 
-$mod = Brick::$modules->GetModule('news');
+$mod = Brick::$modules->GetModule('sys');
 $ds = $mod->getDataSet();
+
+$manager = Brick::$modules->GetModule('news')->GetManager();
 
 $ret = new stdClass();
 $ret->_ds = array();
 
 // Первым шагом необходимо выполнить все комманды по добавлению/обновлению таблиц
 foreach ($ds->ts as $ts){
-	$rcclear = false;
-	foreach($ts->cmd as $cmd){
-		if ($cmd == 'rc'){ $rcclear = true; }
-	}
-	switch ($ts->nm){
-		case 'newslist':
-			if ($rcclear){ CMSQNews::NewsRecycleClear(Brick::$db); }
-			break;
-	}
 	foreach ($ts->rs as $tsrs){
 		if (empty($tsrs->r)){continue; }
-		switch ($ts->nm){
-			case 'news':
-				foreach ($tsrs->r as $r){
-					if ($r->f == 'u'){ CMSQNews::NewsSave(Brick::$db, $r->d); }
-					if ($r->f == 'a'){ CMSQNews::NewsAppend(Brick::$db, $r->d); }
-				}
-				break;
-			case 'newslist':
-				foreach ($tsrs->r as $r){
-					if ($r->f == 'u'){ CMSQNews::NewsPublish(Brick::$db, $r->d->id); }
-					if ($r->f == 'd'){ CMSQNews::NewsRemove(Brick::$db, $r->d->id); }
-					if ($r->f == 'r'){ CMSQNews::NewsRestore(Brick::$db, $r->d->id); }
-				}
-				break;
-		}
+		$manager->DSProcess($ts->nm, $tsrs->r);
 	}
 }
 
@@ -60,32 +38,18 @@ foreach ($ds->ts as $ts){
 	
 	$table->rs = array();
 	foreach ($ts->rs as $tsrs){
-		$rows = null;
-		switch ($ts->nm){
-			case 'newslist':
-				$rows = CMSQNews::NewsList(Brick::$db, $tsrs->p->page, $tsrs->p->limit);
-				break;
-			case 'newscount':
-				$rows = CMSQNews::NewsCount(Brick::$db);
-				break;
-			case 'news':
-				$rows = CMSQNews::News(Brick::$db, $tsrs->p->id);
-				break;
+		$rows = $manager->DSGetData($ts->nm, $tsrs);
+		if (is_null($rows)){
+			$rows = array(array('id'=>0));
 		}
-		if (!is_null($rows)){
-			if ($qcol){
-				$table->cs = $mod->columnToObj($rows);
-				$qcol = false;
-			}
-			$rs = new stdClass();
-			$rs->p = $tsrs->p;
-			if (is_array($rows)){
-				$rs->d = $rows;
-			}else{
-				$rs->d = $mod->rowsToObj($rows);
-			}
-			array_push($table->rs, $rs);
+		if ($qcol){
+			$table->cs = $mod->columnToObj($rows);
+			$qcol = false;
 		}
+		$rs = new stdClass();
+		$rs->p = $tsrs->p;
+		$rs->d = is_array($rows) ? $rows : $mod->rowsToObj($rows);
+		array_push($table->rs, $rs);
 	}
 	array_push($ret->_ds, $table);
 }

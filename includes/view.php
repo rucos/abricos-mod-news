@@ -3,7 +3,7 @@
  * @version $Id$
  * @package Abricos
  * @subpackage News
- * @copyright Copyright (C) 2008 Abricos All rights reserved.
+ * @copyright Copyright (C) 2010 Abricos All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
@@ -11,24 +11,36 @@
 $brick = Brick::$builder->brick;
 
 $param = $brick->param;
-$modNews = Brick::$modules->GetModule('news');
-$newsid = $modNews->newsid;
+$manager = CMSRegistry::$instance->modules->GetModule('news')->GetManager();
 
-if (Brick::$session->IsAdminMode()){
+$newsid = intval($this->registry->adress->dir[1]);
+
+$row = $manager->News($newsid, true);
+if (empty($row)){
+	$brick->content = $brick->param->var['notfound'];
+	return;
+}
+
+/*
+if ($manager->IsAdminRole()){
 	Brick::$builder->AddJSModule('news', 'api.js');
 	$t = $brick->param->var['fedit'];
 	$t = str_replace("{v#id}", $newsid, $t);
 	$brick->param->var['feditbody'] = $t;
 }
+/**/
 
-$row = $modNews->data;
+$var = &$brick->param->var;
 
-$brick->param->var['date'] = $row['dp']>0 ? rusDateTime(date($row['dp'])) : $brick->param->var['notpub'];
-$brick->param->var['page'] = 0;  
-$brick->param->var['title'] = $row['tl'];
-$brick->param->var['intro'] = $row['intro'];
-$brick->param->var['body'] = $row['body'];
+$var['title'] = Brick::ReplaceVar($var['title'], "val", $row['tl']);
+$var['date'] = Brick::ReplaceVar($var['date'], "val", $row['dp']>0 ? rusDateTime(date($row['dp'])) : $brick->param->var['notpub']);
+$var['intro'] = Brick::ReplaceVar($var['intro'], "val", $row['intro']);
+$var['body'] = Brick::ReplaceVar($var['body'], "val", $row['body']);
 
+$var['source'] = '';
+$var['image'] = '';
+
+/*
 if (empty($row['srcnm']) || empty($row['srclnk'])){
 	$brick->param->var['source'] = '';
 }else{
@@ -42,6 +54,7 @@ if (empty($row['img'])){
 }else{
 	$brick->param->var['image'] = str_replace('#id#', $row['img'], $brick->param->var['image']);
 }
+/**/
 Brick::$contentId = $row['contentid'];
 
 ?>

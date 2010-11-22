@@ -12,14 +12,14 @@ Component.requires = {
 };
 Component.entryPoint = function(){
 	
-	if (!Brick.env.user.isModerator()){ return; }
+	if (!Brick.env.user.isAdmin()){ return; }
 	
 	var cp = Brick.mod.user.cp;
 	
 	var menuItem = new cp.MenuItem(this.moduleName);
 	menuItem.icon = '/modules/news/images/cp_icon.gif';
 	menuItem.titleId = 'mod.news.cp.title';
-	menuItem.entryComponent = 'api';
+	menuItem.entryComponent = 'manager';
 	menuItem.entryPoint = 'Brick.mod.news.API.showNewsListWidget';
 	
 	cp.MenuManager.add(menuItem);

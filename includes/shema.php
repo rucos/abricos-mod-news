@@ -44,4 +44,9 @@ if ($updateManager->isInstall()){
 		)".$charset
 	);
 }
+if ($updateManager->isUpdate('0.2.2')){
+	
+	CMSRegistry::$instance->modules->GetModule('news')->permission->Install();
+	
+}
 ?>
