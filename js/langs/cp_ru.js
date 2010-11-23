@@ -1,3 +1,9 @@
-Brick.util.Language.add('ru',{
-	'mod': {'news':{'cp':{'title': 'Новости' }}}
-});
+Brick.util.Language.add('ru',{'mod': {'news':{
+	'title': 'Новости',
+	'roles':{
+		'10': 'Чтение',
+		'30': 'Запись',
+		'50': 'Администрирование'
+	},	
+	'cp':{'title': 'Новости' }
+}}});
