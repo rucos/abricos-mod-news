@@ -6,13 +6,11 @@
 
 var Component = new Brick.Component();
 Component.requires = {
-	mod:[
-	     {name: 'user', files: ['cpanel.js']}
-	]
+	mod:[{name: 'user', files: ['cpanel.js']}]
 };
 Component.entryPoint = function(){
 	
-	if (!Brick.env.user.isAdmin()){ return; }
+	if (Brick.Permission.check('news', '30') != 1){ return; }
 	
 	var cp = Brick.mod.user.cp;
 	

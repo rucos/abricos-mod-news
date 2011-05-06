@@ -1,3 +1,10 @@
+.mod-news .tlnews h2,
+.mod-news .newsblock-rssicon {
+	float: left;
+}
+.mod-news .tlnews h2{
+	margin-right: 5px;
+}
 ul.lastnews li {
 	margin-bottom: 10px;
 }

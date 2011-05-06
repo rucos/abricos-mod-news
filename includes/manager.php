@@ -44,6 +44,14 @@ class NewsManager extends ModuleManager {
 	public function IsViewRole(){
 		return $this->module->permission->CheckAction(NewsAction::VIEW) > 0;
 	}
+	
+	public function IsNewsWriteAccess($newid){
+		if (!$this->IsWriteRole()){ return false; }
+		$info = NewsQuery::NewsInfo($this->db, $newid);
+		if (empty($info) || (!$this->IsAdminRole() && $info['uid'] != $this->userid)) { return false; }
+		return true;
+	}
+	
 		
 	public function AJAX($d){
 		if ($d->type == 'news'){
@@ -85,27 +93,7 @@ class NewsManager extends ModuleManager {
 		return null;
 	}
 	
-	/**
-	 * Добавить новость
-	 * @param Object $d
-	 */
-	public function NewsAppend($d){
-		if (!$this->IsWriteRole()){ return; }
-		NewsQuery::NewsAppend($this->db, $this->userid, $d);
-	}
-	
-	/**
-	 * Обновить новость
-	 * @param Object $d
-	 */
-	public function NewsUpdate($d){
-		if (!$this->IsWriteRole()){ return; }
-		
-		$info = NewsQuery::NewsInfo($this->db, $d->id);
-		if (empty($info) || $info['uid'] != $this->userid) { return false; }
-
-		NewsQuery::NewsUpdate($this->db, $this->userid, $d);
-	}
+	/* * * * * * * * * * * * Чтение новостей * * * * * * * * * * * */
 	
 	public function News($newsid, $retarray = false){
 		if (!$this->IsViewRole()){ return; }
@@ -121,15 +109,35 @@ class NewsManager extends ModuleManager {
 		if (!$this->IsViewRole()){ return; }
 		return NewsQuery::NewsCount($this->db, $this->userid, $retvalue);		
 	}
+
+	/* * * * * * * * * * * * Управление новостями * * * * * * * * * * * */
+	
+	/**
+	 * Добавить новость
+	 * @param Object $d
+	 */
+	public function NewsAppend($d){
+		if (!$this->IsWriteRole()){ return; }
+		NewsQuery::NewsAppend($this->db, $this->userid, $d);
+	}
+	
+	/**
+	 * Обновить новость
+	 * @param Object $d
+	 */
+	public function NewsUpdate($d){
+		if (!$this->IsNewsWriteAccess($d->id)){ return; }
+		NewsQuery::NewsUpdate($this->db, $d);
+	}
 	
 	public function NewsRemove($id){
-		if (!$this->IsWriteRole()){ return; }
-		NewsQuery::NewsRemove($this->db, $id, $this->userid);
+		if (!$this->IsNewsWriteAccess($id)){ return; }
+		NewsQuery::NewsRemove($this->db, $id);
 	}
 	
 	public function NewsRestore($id){
-		if (!$this->IsWriteRole()){ return; }
-		NewsQuery::NewsRestore($this->db, $id, $this->userid);
+		if (!$this->IsNewsWriteAccess($id)){ return; }
+		NewsQuery::NewsRestore($this->db, $id);
 	}
 	
 	public function NewsRecycleClear(){
@@ -138,7 +146,7 @@ class NewsManager extends ModuleManager {
 	}
 	
 	public function NewsPublish($id){
-		if (!$this->IsWriteRole()){ return; }
+		if (!$this->IsNewsWriteAccess($id)){ return; }
 		NewsQuery::NewsPublish($this->db, $id, $this->userid);
 	}
 }

@@ -32,10 +32,9 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function NewsUpdate(CMSDatabase $db, $userid, $d){
+	public static function NewsUpdate(CMSDatabase $db, $d){
 		
 		$info = NewsQuery::NewsInfo($db, $d->id);
-		if (empty($info) || $info['uid'] != $userid) { return; }
 		
 		$sql = "
 			UPDATE ".$db->prefix."content
@@ -147,20 +146,20 @@ class NewsQuery {
 		}
 	}
 	
-	public static function NewsRemove(CMSDatabase $db, $newsid, $userid){
+	public static function NewsRemove(CMSDatabase $db, $newsid){
 		$sql = "
 			UPDATE ".$db->prefix."ns_news 
 			SET deldate=".TIMENOW."
-			WHERE newsid=".bkint($newsid)." AND userid=".bkint($userid)."
+			WHERE newsid=".bkint($newsid)."
 		";
 		$db->query_write($sql);
 	}
 	
-	public static function NewsRestore(CMSDatabase $db, $newsid, $userid){
+	public static function NewsRestore(CMSDatabase $db, $newsid){
 		$sql = "
 			UPDATE ".$db->prefix."ns_news 
 			SET deldate=0
-			WHERE newsid=".bkint($newsid)." AND userid=".bkint($userid)."
+			WHERE newsid=".bkint($newsid)."
 		";
 		$db->query_write($sql);
 	}
@@ -173,11 +172,11 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function NewsPublish(CMSDatabase $db, $newsid, $userid){
+	public static function NewsPublish(CMSDatabase $db, $newsid){
 		$sql = "
 			UPDATE ".$db->prefix."ns_news
 			SET published='".TIMENOW."'
-			WHERE newsid=".bkint($newsid)." AND userid=".bkint($userid)."
+			WHERE newsid=".bkint($newsid)." 
 		";
 		$db->query_write($sql);
 	}

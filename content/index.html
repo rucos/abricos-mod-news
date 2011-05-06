@@ -18,9 +18,12 @@
 [/bkvar]
 
 [*]-->
-<table style="width: 100%;"><tbody><tr>
-	<td><h1>{#news.title}</h1></td>
-	<td style="text-align: right;"><span class="newsblock-rssicon"></span></td>
-</tr></tbody></table>
-<dl class="newslist">[bkvar]lst[/bkvar]</dl>
-[mod]sitemap:paginator[/mod]
+<div class="mod-news bd">
+	<div class="tlnews">
+		<h2>{#news.title}</h2>
+		<span class="newsblock-rssicon"></span>
+		<div class="clear"></div>
+	</div>
+	<dl class="newslist">[bkvar]lst[/bkvar]</dl>
+	[mod]sitemap:paginator[/mod]
+</div>
