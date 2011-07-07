@@ -10,11 +10,6 @@
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
 
-CMSRegistry::$instance->modules->GetModule('comment');
-$modNews = new NewsModule();
-
-CMSRegistry::$instance->modules->Register($modNews);
-
 /**
  * Модуль "Новости" 
  * @package Abricos 
@@ -107,5 +102,9 @@ class NewsPermission extends CMSPermission {
 		);
 	}
 }
+
+CMSRegistry::$instance->modules->GetModule('comment');
+$modNews = new NewsModule();
+CMSRegistry::$instance->modules->Register($modNews);
 
 ?>
