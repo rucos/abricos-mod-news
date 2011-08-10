@@ -35,13 +35,7 @@ class NewsQuery {
 	public static function NewsUpdate(CMSDatabase $db, $d){
 		
 		$info = NewsQuery::NewsInfo($db, $d->id);
-		
-		$sql = "
-			UPDATE ".$db->prefix."content
-			SET body='".bkstr($d->body)."'
-			WHERE contentid=".$info['ctid']."
-		";
-		$db->query_write($sql);
+		CoreQuery::ContentUpdate($db, $info['ctid'], $d->body);
 		$sql = "
 			UPDATE ".$db->prefix."ns_news
 			SET 

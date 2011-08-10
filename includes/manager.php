@@ -33,22 +33,35 @@ class NewsManager extends ModuleManager {
 		$this->userid = $this->user->info['userid'];
 	}
 	
+	/**
+	 * Роль администратора новостей: редактор всех новостей
+	 */	
 	public function IsAdminRole(){
 		return $this->module->permission->CheckAction(NewsAction::ADMIN) > 0;
 	}
 	
+	/**
+	 * Роль публикатора новостей: редактор только своих новостей
+	 */
 	public function IsWriteRole(){
+		if ($this->IsAdminRole()){ return true; }
 		return $this->module->permission->CheckAction(NewsAction::WRITE) > 0;
 	}
 	
+	/**
+	 * Роль просмотра новостей: только просмотр опубликованных новостей
+	 */
 	public function IsViewRole(){
+		if ($this->IsWriteRole()){ return true; }
 		return $this->module->permission->CheckAction(NewsAction::VIEW) > 0;
 	}
 	
 	public function IsNewsWriteAccess($newid){
 		if (!$this->IsWriteRole()){ return false; }
+		if ($this->IsAdminRole()){ return true; }
+		
 		$info = NewsQuery::NewsInfo($this->db, $newid);
-		if (empty($info) || (!$this->IsAdminRole() && $info['uid'] != $this->userid)) { return false; }
+		if (empty($info) || $info['uid'] != $this->userid) { return false; }
 		return true;
 	}
 	

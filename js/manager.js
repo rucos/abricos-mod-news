@@ -32,10 +32,17 @@ Component.entryPoint = function(){
 	
 	var LW = Brick.widget.LayWait;
 	
-(function(){
 	
-	var TM = TMG.build('panel'), T = TM.data, TId = TM.idManager;
-
+	var initCSS = false,
+		buildTemplate = function(w, ts){
+		if (!initCSS){
+			Brick.util.CSS.update(Brick.util.CSS['news']['list']);
+			delete Brick.util.CSS['news']['list'];
+			initCSS = true;
+		}
+		w._TM = TMG.build(ts); w._T = w._TM.data; w._TId = w._TM.idManager;
+	};
+	
 	/**
 	 * Панель "Список новостей".
 	 * 
@@ -48,11 +55,13 @@ Component.entryPoint = function(){
 		});
 	};
 	YAHOO.extend(NewsListPanel, Brick.widget.Panel, {
-		el: function(name){ return Dom.get(TId['panel'][name]); },
-		initTemplate: function(){ return T['panel']; },
+		initTemplate: function(){
+			buildTemplate(this, 'panel');
+			return this._TM.replace('panel'); 
+		},
 		onLoad: function(){
 			
-			this.newsListWidget = new NS.NewsListWidget(TId['panel']['container']);
+			this.newsListWidget = new NS.NewsListWidget(this._TM.getEl('panel.container'));
 			
 			var firstRender = true, __self = this;
 			this.newsListWidget.parentRender = this.newsListWidget.render;
@@ -69,7 +78,7 @@ Component.entryPoint = function(){
 			NewsListPanel.superclass.destroy.call(this);
 		},
 		onClick: function(el){
-			if (el.id == TId['panel']['bclose']){
+			if (el.id == this._TId['panel']['bclose']){
 				this.close(); return true;
 			}
 			return false;
@@ -77,12 +86,7 @@ Component.entryPoint = function(){
 	});
 	
 	NS.NewsListPanel = NewsListPanel;	
-})();	
-
-(function(){
 	
-	var scbAPI =  Brick.objectExists('Brick.Subscribe.API') ? Brick.Subscribe.API : null;
-
 	var NewsListWidget = function(el){
 		
 		var TM = TMG.build('widget,table,row,rowwait,rowdel,btnpub'), 
@@ -118,7 +122,6 @@ Component.entryPoint = function(){
     			'dp': (di['dp']>0 ? Brick.dateExt.convert(di['dp']) : this._T['btnpub']),
     			'prv': '/news/'+di['id']+'/',
     			'scb': '',
-    			// 'scb': L.isNull(this.scbAPI)?'':T['scbrow']
     			'id': di['id']
 			});
     	},
@@ -197,7 +200,7 @@ Component.entryPoint = function(){
     });
 
 	NS.NewsListWidget = NewsListWidget;
-})();
+
 
 	API.showNewsListPanel = function(){
 		var widget = new NS.NewsListPanel();

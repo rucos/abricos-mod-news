@@ -20,7 +20,7 @@ class NewsModule extends CMSModule {
 	private $_manager = null;
 	
 	public function NewsModule(){
-		$this->version = "0.2.3";
+		$this->version = "0.2.4";
 		$this->name = "news";
 		$this->takelink = "news";
 		
