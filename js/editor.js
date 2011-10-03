@@ -14,7 +14,8 @@ Component.requires = {
 	yahoo: ['tabview', 'dragdrop'],
 	mod:[
 	     {name: 'news', files: ['roles.js']},
-	     {name: 'sys', files: ['editor.js', 'container.js', 'data.js', 'form.js', 'calendar.js']}
+	     {name: 'sys', files: ['editor.js', 'container.js', 'data.js', 'form.js']},
+	     {name: 'widget', files: ['calendar.js']}
     ]
 };
 Component.entryPoint = function(){
@@ -75,7 +76,7 @@ Component.entryPoint = function(){
 				'mode': Editor.MODE_VISUAL
 			});
 			
-			this.pubDateTime = new Brick.mod.sys.DateInputWidget(TM.getEl('editor.pdt'), {
+			this.pubDateTime = new Brick.mod.widget.DateInputWidget(TM.getEl('editor.pdt'), {
 				'date': null,
 				'showTime': true
 			});
@@ -177,8 +178,7 @@ Component.entryPoint = function(){
 			
 			this.initTables();
 			
-			var dtpv = this.pubDateTime.getValue(),
-				dtp = L.isNull(dtpv) ? null : dtpv['date'];
+			var dtp = this.pubDateTime.getValue();
 
 			var tableNews = DATA.get('news');
 	 		var row = this.newsId > 0 ? this.rows.getByIndex(0) : tableNews.newRow();
