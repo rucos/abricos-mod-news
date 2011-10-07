@@ -49,12 +49,9 @@ Component.entryPoint = function(){
 	 * @class NewsListPanel
 	 */
 	var NewsListPanel = function(){
-		NewsListPanel.superclass.constructor.call(this, {
-			modal: true,
-			fixedcenter: true			
-		});
+		NewsListPanel.superclass.constructor.call(this);
 	};
-	YAHOO.extend(NewsListPanel, Brick.widget.Panel, {
+	YAHOO.extend(NewsListPanel, Brick.widget.Dialog, {
 		initTemplate: function(){
 			buildTemplate(this, 'panel');
 			return this._TM.replace('panel'); 
