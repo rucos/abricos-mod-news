@@ -10,7 +10,7 @@
 
 require_once 'dbquery.php';
 
-class NewsManager extends ModuleManager {
+class NewsManager extends Ab_ModuleManager {
 	
 	/**
 	 * 
@@ -18,26 +18,15 @@ class NewsManager extends ModuleManager {
 	 */
 	public $module = null;
 	
-	/**
-	 * User
-	 * @var User
-	 */
-	public $user = null;
-	
-	public $userid = 0;
-
-	public function NewsManager(NewsModule $module){
-		parent::ModuleManager($module);
-		
-		$this->user = CMSRegistry::$instance->user;
-		$this->userid = $this->user->info['userid'];
+	public function __construct(NewsModule $module){
+		parent::__construct($module);
 	}
 	
 	/**
 	 * Роль администратора новостей: редактор всех новостей
 	 */	
 	public function IsAdminRole(){
-		return $this->module->permission->CheckAction(NewsAction::ADMIN) > 0;
+		return $this->IsRoleEnable(NewsAction::ADMIN);
 	}
 	
 	/**
@@ -45,7 +34,7 @@ class NewsManager extends ModuleManager {
 	 */
 	public function IsWriteRole(){
 		if ($this->IsAdminRole()){ return true; }
-		return $this->module->permission->CheckAction(NewsAction::WRITE) > 0;
+		return $this->IsRoleEnable(NewsAction::WRITE);
 	}
 	
 	/**
@@ -53,7 +42,7 @@ class NewsManager extends ModuleManager {
 	 */
 	public function IsViewRole(){
 		if ($this->IsWriteRole()){ return true; }
-		return $this->module->permission->CheckAction(NewsAction::VIEW) > 0;
+		return $this->IsRoleEnable(NewsAction::VIEW);
 	}
 	
 	public function IsNewsWriteAccess($newid){

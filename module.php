@@ -15,12 +15,12 @@
  * @package Abricos 
  * @subpackage News
  */
-class NewsModule extends CMSModule {
+class NewsModule extends Ab_Module {
 	
 	private $_manager = null;
 	
 	public function NewsModule(){
-		$this->version = "0.2.4.1";
+		$this->version = "0.2.5";
 		$this->name = "news";
 		$this->takelink = "news";
 		
@@ -103,8 +103,7 @@ class NewsPermission extends CMSPermission {
 	}
 }
 
-CMSRegistry::$instance->modules->GetModule('comment');
-$modNews = new NewsModule();
-CMSRegistry::$instance->modules->Register($modNews);
+Abricos::GetModule('comment');
+Abricos::ModuleRegister(new NewsModule());
 
 ?>

@@ -11,7 +11,7 @@
  */
 
 $brick = Brick::$builder->brick;
-$mod = Brick::$modules->GetModule('news');
+$mod = Abricos::GetModule('news');
 $manager = $mod->GetManager();
 
 $limit = $brick->param->param['count'];
@@ -25,7 +25,7 @@ $baseUrl = "/".$mod->takelink."/";
 $lst = "";
 $rows = $manager->NewsList(1, $limit);
 
-while (($row = Brick::$db->fetch_array($rows))){
+while (($row = Abricos::$db->fetch_array($rows))){
 	$lst .= Brick::ReplaceVarByData($brick->param->var['row'], array(
 		"date" => date($dateFormat, $row['dp']),
 		"link" => $baseUrl.$row['id']."/",

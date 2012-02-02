@@ -12,10 +12,10 @@
 
 $brick = Brick::$builder->brick;
 
-$mod = Brick::$modules->GetModule('sys');
+$mod = Abricos::GetModule('sys');
 $ds = $mod->getDataSet();
 
-$manager = Brick::$modules->GetModule('news')->GetManager();
+$manager = Abricos::GetModule('news')->GetManager();
 
 $ret = new stdClass();
 $ret->_ds = array();

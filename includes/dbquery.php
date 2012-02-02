@@ -10,8 +10,8 @@
 
 class NewsQuery {
 	
-	public static function NewsAppend(CMSDatabase $db, $userid, $d){
-		$contentid = CoreQuery::CreateContent($db, $d->body, 'news');
+	public static function NewsAppend(Ab_Database $db, $userid, $d){
+		$contentid = Ab_CoreQuery::CreateContent($db, $d->body, 'news');
 		$sql = "
 			INSERT INTO ".$db->prefix."ns_news (
 				userid, dateline, dateedit, published, 
@@ -32,10 +32,10 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function NewsUpdate(CMSDatabase $db, $d){
+	public static function NewsUpdate(Ab_Database $db, $d){
 		
 		$info = NewsQuery::NewsInfo($db, $d->id);
-		CoreQuery::ContentUpdate($db, $info['ctid'], $d->body);
+		Ab_CoreQuery::ContentUpdate($db, $info['ctid'], $d->body);
 		$sql = "
 			UPDATE ".$db->prefix."ns_news
 			SET 
@@ -51,7 +51,7 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function News(CMSDatabase $db, $newsid, $userid = 0, $retarray = false){
+	public static function News(Ab_Database $db, $newsid, $userid = 0, $retarray = false){
 		$sql = "
 			SELECT
 				a.newsid as id,
@@ -76,7 +76,7 @@ class NewsQuery {
 		return $retarray ? $db->query_first($sql) : $db->query_read($sql);
 	}
 	
-	public static function NewsInfo(CMSDatabase $db, $newsid){
+	public static function NewsInfo(Ab_Database $db, $newsid){
 		$sql = "
 			SELECT 
 				newsid as id,
@@ -95,13 +95,13 @@ class NewsQuery {
 	/**
 	 * Список новостей
 	 *
-	 * @param CMSDatabase $db
+	 * @param Ab_Database $db
 	 * @param integer $limit
 	 * @param integer $page
 	 * @param boolean $full Если true, содержит удаленные, черновики 
 	 * @return resource
 	 */
-	public static function NewsList(CMSDatabase $db, $userid = 0, $page=1, $limit=10){
+	public static function NewsList(Ab_Database $db, $userid = 0, $page=1, $limit=10){
 		$from = $limit * (max($page, 1) - 1);
 		$sql = "
 			SELECT
@@ -125,7 +125,7 @@ class NewsQuery {
 		return $db->query_read($sql);
 	}
 	
-	public static function NewsCount(CMSDatabase $db, $userid = 0, $retvalue = false){
+	public static function NewsCount(Ab_Database $db, $userid = 0, $retvalue = false){
 		$sql = "
 			SELECT count( newsid ) AS cnt
 			FROM ".$db->prefix."ns_news
@@ -140,7 +140,7 @@ class NewsQuery {
 		}
 	}
 	
-	public static function NewsRemove(CMSDatabase $db, $newsid){
+	public static function NewsRemove(Ab_Database $db, $newsid){
 		$sql = "
 			UPDATE ".$db->prefix."ns_news 
 			SET deldate=".TIMENOW."
@@ -149,7 +149,7 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function NewsRestore(CMSDatabase $db, $newsid){
+	public static function NewsRestore(Ab_Database $db, $newsid){
 		$sql = "
 			UPDATE ".$db->prefix."ns_news 
 			SET deldate=0
@@ -158,7 +158,7 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function NewsRecycleClear(CMSDatabase $db, $userid){
+	public static function NewsRecycleClear(Ab_Database $db, $userid){
 		$sql = "
 			DELETE FROM ".$db->prefix."ns_news
 			WHERE deldate > 0 AND userid=".bkint($userid)."
@@ -166,7 +166,7 @@ class NewsQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function NewsPublish(CMSDatabase $db, $newsid){
+	public static function NewsPublish(Ab_Database $db, $newsid){
 		$sql = "
 			UPDATE ".$db->prefix."ns_news
 			SET published='".TIMENOW."'

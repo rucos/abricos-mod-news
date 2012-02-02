@@ -12,10 +12,10 @@
 
 $brick = Brick::$builder->brick;
 
-$tag = CMSRegistry::$instance->adress->dir[1];
+$tag = Abricos::$adress->dir[1];
 $page = intval(substr($tag, 4, strlen($tag)-4));
 
-$mod = CMSRegistry::$instance->modules->GetModule('news');
+$mod = Abricos::GetModule('news');
 $manager = $mod->GetManager();
 
 // кол-во новостей на странице
@@ -27,7 +27,7 @@ $baseUrl = "/".$mod->takelink."/";
 $lst = "";
 $rows = $manager->NewsList($page, $limit);
 
-while (($row = Brick::$db->fetch_array($rows))){
+while (($row = Abricos::$db->fetch_array($rows))){
 	$lst .= Brick::ReplaceVarByData($brick->param->var['row'], array(
 		"date" => date($dateFormat, $row['dp']),
 		"link" => $baseUrl.$row['id']."/",

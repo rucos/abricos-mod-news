@@ -11,7 +11,7 @@
 $brick = Brick::$builder->brick;
 
 $param = $brick->param;
-$manager = CMSRegistry::$instance->modules->GetModule('news')->GetManager();
+$manager = Abricos::GetModule('news')->GetManager();
 
 $newsid = intval($this->registry->adress->dir[1]);
 
