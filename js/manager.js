@@ -15,14 +15,11 @@ Component.requires = {
          {name: 'sys', files: ['data.js', 'container.js', 'widgets.js', 'wait.js']}
     ]
 };
-Component.entryPoint = function(){
+Component.entryPoint = function(NS){
 	var Dom = YAHOO.util.Dom,
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
 
-	var NS = this.namespace, 
-		TMG = this.template;
-	
 	var API = NS.API;
 	
 	if (!NS.data){
@@ -32,16 +29,7 @@ Component.entryPoint = function(){
 	
 	var LW = Brick.widget.LayWait;
 	
-	
-	var initCSS = false,
-		buildTemplate = function(w, ts){
-		if (!initCSS){
-			Brick.util.CSS.update(Brick.util.CSS['news']['list']);
-			delete Brick.util.CSS['news']['list'];
-			initCSS = true;
-		}
-		w._TM = TMG.build(ts); w._T = w._TM.data; w._TId = w._TM.idManager;
-	};
+	var buildTemplate = this.buildTemplate;
 	
 	/**
 	 * Панель "Список новостей".
@@ -53,8 +41,7 @@ Component.entryPoint = function(){
 	};
 	YAHOO.extend(NewsListPanel, Brick.widget.Dialog, {
 		initTemplate: function(){
-			buildTemplate(this, 'panel');
-			return this._TM.replace('panel'); 
+			return buildTemplate(this, 'panel').replace('panel'); 
 		},
 		onLoad: function(){
 			
@@ -86,9 +73,7 @@ Component.entryPoint = function(){
 	
 	var NewsListWidget = function(el){
 		
-		var TM = TMG.build('widget,table,row,rowwait,rowdel,btnpub'), 
-			T = TM.data, TId = TM.idManager;
-		this._TM = TM, this._T = T, this._TId = TId;
+		var TM = buildTemplate(this, 'widget,table,row,rowwait,rowdel,btnpub');
 		
 		var config = {
 			rowlimit: 10,

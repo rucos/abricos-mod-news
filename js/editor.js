@@ -18,30 +18,20 @@ Component.requires = {
 	     {name: 'widget', files: ['calendar.js']}
     ]
 };
-Component.entryPoint = function(){
+Component.entryPoint = function(NS){
+	
 	var Dom = YAHOO.util.Dom,
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
 
-	var NS = this.namespace, 
-		TMG = this.template,
-		API = NS.API,
+	var API = NS.API,
 		R = NS.roles;
 
-	if (!NS.data){
-		NS.data = new Brick.util.data.byid.DataSet('news');
-	}
+	NS.data = NS.data || new Brick.util.data.byid.DataSet('news');
+	
 	var DATA = NS.data;
 	
-	var initCSS = false,
-		buildTemplate = function(w, ts){
-		if (!initCSS){
-			Brick.util.CSS.update(Brick.util.CSS['news']['editor']);
-			delete Brick.util.CSS['news']['editor'];
-			initCSS = true;
-		}
-		w._TM = TMG.build(ts); w._T = w._TM.data; w._TId = w._TM.idManager;
-	};
+	var buildTemplate = this.buildTemplate;
 
 	var EditorPanel = function(newsId){
 		this.newsId = newsId*1 || 0;
@@ -51,7 +41,7 @@ Component.entryPoint = function(){
 			width: '830px'
 		});
 	};
-	YAHOO.extend(EditorPanel, Brick.widget.Panel, {
+	YAHOO.extend(EditorPanel, Brick.widget.Dialog, {
 		el: function(name){ return Dom.get(this._TId['editor'][name]); },
 		elv: function(name){ return Brick.util.Form.getValue(this.el(name)); },
 		setelv: function(name, value){ Brick.util.Form.setValue(this.el(name), value); },
@@ -61,22 +51,22 @@ Component.entryPoint = function(){
 		},
 		onLoad: function(){
 			
-			var TM = this._TM;
-			var tabView = new YAHOO.widget.TabView(TM.getEl('editor.tabpage'));
+			var TM = this._TM, gel = function(n){return TM.getEl('editor.'+n);};
+			new YAHOO.widget.TabView(gel('tabpage'));
 			
-			this.actionDisable(TM.getElId('editor.bcancel'));
+			gel('bcancel').disabled = 'disabled';
 
 			var Editor = Brick.widget.Editor;
 
-			this.editorIntro = new Editor(TM.getEl('editor.bodyint'), {
+			this.editorIntro = new Editor(gel('bodyint'), {
 				'mode': Editor.MODE_VISUAL
 			});
 
-			this.editorBody = new Editor(TM.getEl('editor.bodyman'), {
+			this.editorBody = new Editor(gel('bodyman'), {
 				'mode': Editor.MODE_VISUAL
 			});
 			
-			this.pubDateTime = new Brick.mod.widget.DateInputWidget(TM.getEl('editor.pdt'), {
+			this.pubDateTime = new Brick.mod.widget.DateInputWidget(gel('pdt'), {
 				'date': null,
 				'showTime': true
 			});
@@ -129,9 +119,11 @@ Component.entryPoint = function(){
  		 		this.setelv('srcname', news['srcnm']);
  		 		this.setelv('srclink', news['srclnk']);
  		 		this.setImage(news['img']);
- 		 		this.pubDateTime.setValue(new Date(news['dp']*1000));
+ 		 		
+ 		 		this.pubDateTime.setValue(news['dp'] == 0 ? null : new Date(news['dp']*1000));
 	 		}
-	 		this.actionEnable();
+	 		
+			this.el('bcancel').disabled = '';
 		},
 
 		destroy: function(){
