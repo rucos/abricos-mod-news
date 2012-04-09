@@ -58,14 +58,16 @@ class NewsModule extends Ab_Module {
 		return $this->registry->adress->host."/".$this->takelink."/".$newsid."/";
 	}
 	
-	public function RssWrite(CMSRssWriter2_0 $writer){
-		require_once 'includes/dbquery.php';
+	public function RSS_GetItemList($inBosUI = false){
+		$ret = array();
+				
 		$rows = $this->GetManager()->NewsList(1, 10);
 		while (($row = $this->registry->db->fetch_array($rows))){
-			$item = new CMSRssWriter2_0Item($row['tl'], $this->GetLink($row['id']), $row['intro']);
-			$item->pubDate = $row['dp'];
-			$writer->WriteItem($item);
+			$item = new RSSItem($row['tl'], $this->GetLink($row['id']), $row['intro'], $row['dp']);
+			$item->modTitle = $this->lang['title'];
+			array_push($ret, $item);
 		}
+		return $ret;
 	}
 	
 	public function RssMetaLink(){
