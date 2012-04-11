@@ -1,8 +1,11 @@
-.mod-news .tlnews h2,
-.mod-news .newsblock-rssicon {
-	float: left;
+.mod-news .newsblock h4 {
+	position: relative;
 }
-.mod-news .tlnews h2{
+.mod-news .newsblock .rssicon {
+	position: absolute;
+	right: 10px;
+}
+.mod-news .tlnews h2 {
 	margin-right: 5px;
 }
 ul.lastnews li {

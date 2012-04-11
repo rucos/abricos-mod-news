@@ -1,18 +1,22 @@
 <!--[*]
+[script]newsblock.php[/script]
 [mod=news]lastnews|count=3[/mod]
 [p=hideintro][/p]
+[p=showempty][/p]
+
+[bkvar=rss]
+	<span class="rssicon">
+		<a href='/rss/news/' title='Канал новостей в формате RSS'>
+			<img src='/modules/rss/images/rss-icon-16px-op50.gif' />
+		</a>
+	</span>
+[/bkvar]
+
+
 [*]-->
-<div class="newsblock box">
-	<h4>{#news.title}&nbsp;&nbsp;&nbsp; <span class="newsblock-rssicon"></span></h4>
-	[mod]news:lastnews[/mod]
+<div class="mod-news box">
+	<div class="newsblock">
+		<h3>{#news.title} {v#rss}</h3>
+		[mod]news:lastnews[/mod]
+	</div>
 </div>
-<script language='JavaScript' type='text/javascript' charset='utf-8'>
-	YAHOO.util.Event.onDOMReady(function () {
-		if (Brick.componentExists('rss', 'cp')){
-			var els = document.getElementsByClassName('newsblock-rssicon');
-			for (var i=0;i<els.length;i++){
-				els[i].innerHTML = "<a href='/rss/news/' title='Канал новостей в формате RSS'><img src='/modules/rss/images/rss-icon-16px.gif' /></a>";
-			}
-		}
-	});
-</script>

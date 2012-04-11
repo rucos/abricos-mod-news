@@ -43,6 +43,27 @@ if ($updateManager->isInstall()){
 		  PRIMARY KEY  (`newsid`)
 		)".$charset
 	);
+	
+	if (Ab_UpdateManager::$isCoreInstall){
+		// Идет инсталляция платформа
+		
+		$d = new stdClass();
+		$d->tl = "Рождение сайта";
+		$d->intro = "
+<p>Уважаемые посетители!</p>		
+<p>
+	Мы рады сообщить Вам о запуске нашего сайта.
+</p>
+<p>
+	Для работы сайта мы используем платформу <a href='http://abricos.org' title='Abricos - система управления сайтом (CMS), платформа интернет-приложений (WebOS)'>Абрикос</a>,
+	потому что именно на этой платформе мы сможем реализовать для Вас 
+	практически безграничные возможности.
+</p>
+		";
+		$d->dp = TIMENOW;
+		require_once 'dbquery.php';
+		NewsQuery::NewsAppend($db, 1, $d);
+	}
 }
 if ($updateManager->isUpdate('0.2.2')){
 	

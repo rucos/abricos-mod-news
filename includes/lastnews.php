@@ -25,7 +25,10 @@ $baseUrl = "/".$mod->takelink."/";
 $lst = "";
 $rows = $manager->NewsList(1, $limit);
 
+$viewcount = 0;
+
 while (($row = Abricos::$db->fetch_array($rows))){
+	$viewcount++;
 	$lst .= Brick::ReplaceVarByData($brick->param->var['row'], array(
 		"date" => date($dateFormat, $row['dp']),
 		"link" => $baseUrl.$row['id']."/",
@@ -34,6 +37,7 @@ while (($row = Abricos::$db->fetch_array($rows))){
 	));
 }
 
+$brick->viewcount = $viewcount;
 $brick->param->var['result'] = $lst;
 
 
