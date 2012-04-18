@@ -1,9 +1,9 @@
-.mod-news .newsblock h4 {
+.mod-news .newsblock h3 {
 	position: relative;
 }
 .mod-news .newsblock .rssicon {
 	position: absolute;
-	right: 10px;
+	right: 0px;
 }
 .mod-news .tlnews h2 {
 	margin-right: 5px;
