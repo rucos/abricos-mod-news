@@ -1,26 +1,25 @@
-<!--{editor}-->
-<div class='hd'>Редактор новости</div>
+<!--{editor}--><div class='hd'>{#mod.news.editor.editor.1}</div>
 <div class='bd mod-news'>
 
 	<div class="editor">
 	
 		<div id="{i#tabpage}" class="yui-navset">
 			<ul class="yui-nav">
-				<li class="selected"><a href="#{i#tabrecord}"><em>Новость</em></a></li>
-				<li><a href="#{i#tabimage}"><em>Дополнительно</em></a></li>
+				<li class="selected"><a href="#{i#tabrecord}"><em>{#mod.news.editor.editor.2}</em></a></li>
+				<li><a href="#{i#tabimage}"><em>{#mod.news.editor.editor.3}</em></a></li>
 			</ul>            
 			<div class="yui-content">
 				<div id="{i#tabrecord}">
 					<div class="field linespace-1">
 					
 						<p>
-							{#news.admin.editor.title} 
+							{#mod.news.editor.editor.title} 
 							<input id="{i#title}" type="text" size="30" style="font-size: 1.2em; width: 450px;" />
 						</p>
 						
-						<p>{#news.admin.editor.bodyint}</p>
+						<p>{#mod.news.editor.editor.bodyint}</p>
 						<textarea id="{i#bodyint}" style="width: 750px; height: 150px"></textarea>
-						<p>{#news.admin.editor.bodyman}</p>
+						<p>{#mod.news.editor.editor.bodyman}</p>
 						<textarea id="{i#bodyman}" style="width: 750px; height: 200px"></textarea>
 					</div>
 				</div>
@@ -28,18 +27,16 @@
 				
 				
 					<div class="iit">					
-						<h3>Дата/время публикации новости</h3>
+						<h3>{#mod.news.editor.editor.4}</h3>
 						
 						<div id="{i#pdt}"></div>
 					</div>
 					
-				
-				
 					<div class="iit">
-						<h3>Источник</h3>
+						<h3>{#mod.news.editor.editor.5}</h3>
 						<dl>
 							<dt>
-								<label>{#news.admin.editor.srcname}</label>
+								<label>{#mod.news.editor.editor.srcname}</label>
 							</dt>
 							<dd>
 								<input id="{i#srcname}" type="text" style="width: 150px" />
@@ -47,7 +44,7 @@
 						</dl>
 						<dl>
 							<dt>
-								<label>{#news.admin.editor.srclink}</label>
+								<label>{#mod.news.editor.editor.srclink}</label>
 							</dt>
 							<dd>
 								<input id="{i#srclink}" type="text" style="width: 350px" />
@@ -59,9 +56,8 @@
 					<div style="display: none">
 						<div id="{i#fmwarn}">
 							<p>
-								<b>Предупреждение.</b><br />
-								Модуль "Менеджер файлов" не установлен на этом сайте, 
-								поэтому вы не можете загрузить картинку для новости.
+								<b>{#mod.news.editor.editor.6}</b><br />
+								{#mod.news.editor.editor.7}
 							</p>
 						</div>
 						<div id="{i#fm}" style="display: none">
@@ -89,10 +85,10 @@
 		</div>
 		
 		<div class="buttons">
-			<input id="{i#bpub}" type="button" value="{#news.admin.editor.bpub}" />
-			<input id="{i#bdraft}" type="button" value="{#news.admin.editor.bdraft}" />
-			<input id="{i#bsave}" type="button" value="{#news.admin.editor.bsave}"  />
-			<input id="{i#bcancel}" type="button" value="{#news.admin.editor.bcancel}" />
+			<input id="{i#bpub}" type="button" value="{#mod.news.editor.editor.bpub}" />
+			<input id="{i#bdraft}" type="button" value="{#mod.news.editor.editor.bdraft}" />
+			<input id="{i#bsave}" type="button" value="{#mod.news.editor.editor.bsave}"  />
+			<input id="{i#bcancel}" type="button" value="{#mod.news.editor.editor.bcancel}" />
 		</div>
 		
 	</div>

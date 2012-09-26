@@ -20,7 +20,7 @@ class NewsModule extends Ab_Module {
 	private $_manager = null;
 	
 	public function NewsModule(){
-		$this->version = "0.2.5";
+		$this->version = "0.2.6";
 		$this->name = "news";
 		$this->takelink = "news";
 		

@@ -93,8 +93,9 @@ Component.entryPoint = function(NS){
     		return this._T['widget'];
     	},
     	renderTableAwait: function(){
-    		this._TM.getEl("widget.table").innerHTML = this._TM.replace('table', {
-    			'scb': '', 'rows': this._T['rowwait']
+    		var TM = this._TM;
+    		TM.getEl("widget.table").innerHTML = TM.replace('table', {
+    			'scb': '', 'rows': TM.replace('rowwait')
     		});
     	},
 		renderRow: function(di){

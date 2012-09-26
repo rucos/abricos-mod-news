@@ -15,7 +15,8 @@ class NewsQuery {
 		$sql = "
 			INSERT INTO ".$db->prefix."ns_news (
 				userid, dateline, dateedit, published, 
-				contentid, title, intro, imageid, source_name, source_link
+				contentid, title, intro, imageid, source_name, source_link,
+				language
 			) VALUES (
 				".bkint($userid).",
 				".TIMENOW.",
@@ -26,7 +27,8 @@ class NewsQuery {
 				'".bkstr($d->intro)."',
 				'".bkstr($d->img)."',
 				'".bkstr($d->srcnm)."',
-				'".bkstr($d->srclnk)."'
+				'".bkstr($d->srclnk)."',
+				'".bkstr(Abricos::$LNG)."'
 			)
 		";
 		$db->query_write($sql);
@@ -118,7 +120,7 @@ class NewsQuery {
 				source_link as srclnk,
 				intro
 			FROM ".$db->prefix."ns_news
-			WHERE (deldate=0 AND published>0) OR userid=".bkint($userid)." 
+			WHERE ((deldate=0 AND published>0) OR userid=".bkint($userid).") AND language='".bkstr(Abricos::$LNG)."' 
 			ORDER BY dl DESC 
 			LIMIT ".$from.",".bkint($limit)."
 		";
@@ -129,7 +131,7 @@ class NewsQuery {
 		$sql = "
 			SELECT count( newsid ) AS cnt
 			FROM ".$db->prefix."ns_news
-			WHERE (deldate=0 AND published>0) OR userid=".bkint($userid)." 
+			WHERE ((deldate=0 AND published>0) OR userid=".bkint($userid).") AND language='".bkstr(Abricos::$LNG)."' 
 			LIMIT 1 
 		";
 		if ($retvalue){

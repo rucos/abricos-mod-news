@@ -29,6 +29,7 @@ if ($updateManager->isInstall()){
 	$db->query_write("
 		CREATE TABLE IF NOT EXISTS ".$pfx."ns_news (
 		  `newsid` int(10) unsigned NOT NULL auto_increment,
+		  `language` CHAR(2) NOT NULL DEFAULT '' COMMENT 'Язык',
 		  `userid` int(10) unsigned NOT NULL,
 		  `dateline` int(10) unsigned NOT NULL default '0',
 		  `dateedit` int(10) unsigned NOT NULL default '0',
@@ -48,18 +49,34 @@ if ($updateManager->isInstall()){
 		// Идет инсталляция платформа
 		
 		$d = new stdClass();
-		$d->tl = "Рождение сайта";
-		$d->intro = "
-<p>Уважаемые посетители!</p>		
-<p>
-	Мы рады сообщить Вам о запуске нашего сайта.
-</p>
-<p>
-	Для работы сайта мы используем платформу <a href='http://abricos.org' title='Abricos - система управления сайтом (CMS), платформа интернет-приложений (WebOS)'>Абрикос</a>,
-	потому что именно на этой платформе мы сможем реализовать для Вас 
-	практически безграничные возможности.
-</p>
-		";
+		
+		if (Abricos::$LNG == 'ru'){
+			$d->tl = "Рождение сайта";
+			$d->intro = "
+				<p>Уважаемые посетители!</p>
+				<p>
+					Мы рады сообщить Вам о запуске нашего сайта.
+				</p>
+				<p>
+					Для работы сайта мы используем платформу <a href='http://abricos.org' title='Abricos - система управления сайтом (CMS), платформа интернет-приложений (WebOS)'>Абрикос</a>,
+					потому что именно на этой платформе мы сможем реализовать для Вас
+					практически безграничные возможности.
+				</p>
+			";
+		}else{
+			$d->tl = "Birth site";
+			$d->intro = "
+				<p>Dear visitors!</p>
+				<p>
+					We are pleased to announce the launch of our website.
+				</p>
+				<p>
+					For site work, we use <a href='http://abricos.org' title='Abricos Platform - CMS, WebOS'>Abricos Platrofm</a>,
+					because it was on this platform, we can realize for you virtually limitless possibilities.
+				</p>
+			";
+		}
+		
 		$d->dp = TIMENOW;
 		require_once 'dbquery.php';
 		NewsQuery::NewsAppend($db, 1, $d);
@@ -70,4 +87,15 @@ if ($updateManager->isUpdate('0.2.2')){
 	Abricos::GetModule('news')->permission->Install();
 	
 }
+
+if ($updateManager->isUpdate('0.2.6') && !$updateManager->isInstall()){
+
+	$db->query_write("
+		ALTER TABLE ".$pfx."ns_news
+		ADD `language` CHAR(2) NOT NULL DEFAULT '' COMMENT 'Язык'
+	");
+	$db->query_write("UPDATE ".$pfx."ns_news SET language='ru'");
+
+}
+
 ?>
