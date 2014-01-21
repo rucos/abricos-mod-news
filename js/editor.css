@@ -21,8 +21,8 @@
 }
 
 .mod-news .editor .nimage {
-	margin: 3
-	overflow-y:auto; 
+	margin: 3px;
+	overflow-y: auto; 
 	width: 300px; 
 	height: 300px;
 	border:1px solid #CBCBCB;
