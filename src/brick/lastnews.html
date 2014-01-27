@@ -3,19 +3,19 @@
 [mcss=news]news.css[/mcss]
 [bkvar=result][/bkvar]
 [bkvar=row]
-	<li>
-		<span class="date">{v#date}</span>
-		<a class="title" href="{v#link}">{v#title}</a>
-		<span class="intro">{v#intro}</span>
-	</li>
+    <div class="newsrow">
+        <span class="date">{v#date}</span>
+        <a class="title" href="{v#link}">{v#title}</a>
+        <span class="intro">{v#intro}</span>
+    </div>
 [/bkvar]
 [bkvar=fullnewslink]/news/[/bkvar]
 [p=count]3[/p]
 [p=hideintro][/p]
 [*]-->
-<ul class="lastnews">
-	[bkvar]result[/bkvar]
-	<li class="fullnews">
-		<a href="[bkvar]fullnewslink[/bkvar]">{#brick.lastnews.1}</a>
-	</li>
-</ul>
+<div class="lastnews">
+    [bkvar]result[/bkvar]
+    <div class="newsrow fullnews">
+        <a href="[bkvar]fullnewslink[/bkvar]">{#brick.lastnews.1}</a>
+    </div>
+</div>
