@@ -1,7 +1,7 @@
 <?php
 /**
  * Список последних новостей
- * 
+ *
  * @version $Id$
  * @package Abricos
  * @subpackage News
@@ -13,20 +13,20 @@
 $brick = Brick::$builder->brick;
 $p = $brick->param->param;
 
-if ($brick->child[0]->viewcount == 0 && !$p['showempty']){
-	$brick->content = "";
-	return;
+if ($brick->child[0]->viewcount == 0 && !$p['showempty']) {
+    $brick->content = "";
+    return;
 }
 
 $modRSS = Abricos::GetModule('rss');
 
 $rss = "";
-if (!empty($modRSS)){
-	$rss = $brick->param->var['rss'];
+if (!empty($modRSS)) {
+    $rss = $brick->param->var['rss'];
 }
 
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-	'rss' => $rss
+    'rss' => $rss
 ));
 
 

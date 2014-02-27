@@ -16,9 +16,9 @@ $manager = Abricos::GetModule('news')->GetManager();
 $newsid = intval($this->registry->adress->dir[1]);
 
 $row = $manager->News($newsid, true);
-if (empty($row)){
-	$brick->content = $brick->param->var['notfound'];
-	return;
+if (empty($row)) {
+    $brick->content = $brick->param->var['notfound'];
+    return;
 }
 
 /*
@@ -30,10 +30,10 @@ if ($manager->IsAdminRole()){
 }
 /**/
 
-$var = &$brick->param->var;
+$var = & $brick->param->var;
 
 $var['title'] = Brick::ReplaceVar($var['title'], "val", $row['tl']);
-$var['date'] = Brick::ReplaceVar($var['date'], "val", $row['dp']>0 ? rusDateTime(date($row['dp'])) : $brick->param->var['notpub']);
+$var['date'] = Brick::ReplaceVar($var['date'], "val", $row['dp'] > 0 ? rusDateTime(date($row['dp'])) : $brick->param->var['notpub']);
 $var['intro'] = Brick::ReplaceVar($var['intro'], "val", $row['intro']);
 $var['body'] = Brick::ReplaceVar($var['body'], "val", $row['body']);
 
