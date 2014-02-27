@@ -1,5 +1,5 @@
 <!--[*]
-[script]newsblock.php[/script]
+[script]brick_newsblock.php[/script]
 [mod=news]lastnews|count=3[/mod]
 [p=hideintro][/p]
 [p=showempty][/p]
@@ -13,9 +13,16 @@
 [/bkvar]
 
 [*]-->
-<div class="mod-news box">
+<div class="mod-news">
     <div class="newsblock">
-        <h3>{#brick.newsblock.2} {v#rss}</h3>
-        [mod]news:lastnews[/mod]
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{#brick.newsblock.2} {v#rss}</h3>
+            </div>
+
+            <div class="panel-body">
+                [mod]news:lastnews[/mod]
+            </div>
+        </div>
     </div>
 </div>

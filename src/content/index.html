@@ -1,7 +1,7 @@
 <!--[*]
 [tt=main][/tt]
 
-[script]index.php[/script]
+[script]content_index.php[/script]
 [mcss=sitemap]sitemap.css[/mcss]
 [mcss=news]news.css[/mcss]
 
@@ -18,10 +18,8 @@
 [/bkvar]
 
 [*]-->
-<div class="mod-news bd">
-	<div class="tlnews">
-		<h2>{#content.index.1}</h2>
-	</div>
-	<dl class="newslist">[bkvar]lst[/bkvar]</dl>
-	[mod]sitemap:paginator[/mod]
+<div class="mod-news">
+    <h2>{#content.index.1}</h2>
+    <dl class="newslist">[bkvar]lst[/bkvar]</dl>
+    [mod]sitemap:paginator[/mod]
 </div>
