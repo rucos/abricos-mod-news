@@ -12,15 +12,18 @@
 
 $brick = Brick::$builder->brick;
 
+
 $tag = Abricos::$adress->dir[1];
 $page = intval(substr($tag, 4, strlen($tag) - 4));
 
 $mod = Abricos::GetModule('news');
 $manager = $mod->GetManager();
 
+$phrase = Brick::$builder->phrase;
+
 // кол-во новостей на странице
-$limit = Brick::$builder->phrase->Get('news', 'page_count', 10);
-$dateFormat = Brick::$builder->phrase->Get('news', 'date_format', "Y-m-d");
+$limit = $phrase->Get('news', 'page_count', 10);
+$dateFormat = $phrase->Get('news', 'date_format', "Y-m-d");
 
 $baseUrl = "/".$mod->takelink."/";
 
@@ -47,6 +50,14 @@ Brick::$builder->LoadBrickS('sitemap', 'paginator', $brick, array("p" => array(
     "perpage" => $limit,
     "uri" => $baseUrl
 )));
+
+$title = $mod->lang['content']['index']['1'];
+$title = $phrase->Get('news', 'list_meta_title', $title);
+
+// Вывод заголовка страницы
+if (!empty($title)) {
+    Brick::$builder->SetGlobalVar('meta_title', $title);
+}
 
 
 ?>
