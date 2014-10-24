@@ -75,18 +75,18 @@ class NewsAction {
     const ADMIN = 50;
 }
 
-class NewsPermission extends CMSPermission {
+class NewsPermission extends Ab_UserPermission {
 
-    public function NewsPermission(NewsModule $module) {
+    public function __construct(NewsModule $module) {
         $defRoles = array(
-            new CMSRole(NewsAction::VIEW, 1, User::UG_GUEST),
-            new CMSRole(NewsAction::VIEW, 1, User::UG_REGISTERED),
-            new CMSRole(NewsAction::VIEW, 1, User::UG_ADMIN),
+            new Ab_UserRole(NewsAction::VIEW, Ab_UserGroup::GUEST),
+            new Ab_UserRole(NewsAction::VIEW, Ab_UserGroup::REGISTERED),
+            new Ab_UserRole(NewsAction::VIEW, Ab_UserGroup::ADMIN),
 
-            new CMSRole(NewsAction::WRITE, 1, User::UG_ADMIN),
-            new CMSRole(NewsAction::ADMIN, 1, User::UG_ADMIN)
+            new Ab_UserRole(NewsAction::WRITE, Ab_UserGroup::ADMIN),
+            new Ab_UserRole(NewsAction::ADMIN, Ab_UserGroup::ADMIN)
         );
-        parent::CMSPermission($module, $defRoles);
+        parent::__construct($module, $defRoles);
     }
 
     public function GetRoles() {
