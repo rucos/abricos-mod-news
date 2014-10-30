@@ -26,7 +26,7 @@ class NewsModule extends Ab_Module {
      * @return string
      */
     public function GetContentName() {
-        $adress = $this->registry->adress;
+        $adress = Abricos::$adress;
 
         if ($adress->level == 2 && substr($adress->dir[1], 0, 4) != 'page') {
             return "view";
@@ -48,14 +48,14 @@ class NewsModule extends Ab_Module {
     }
 
     public function GetLink($newsid) {
-        return $this->registry->adress->host."/".$this->takelink."/".$newsid."/";
+        return Ab_URI::fetch_host()."/".$this->takelink."/".$newsid."/";
     }
 
     public function RSS_GetItemList($inBosUI = false) {
         $ret = array();
 
         $rows = $this->GetManager()->NewsList(1, 10);
-        while (($row = $this->registry->db->fetch_array($rows))) {
+        while (($row = Abricos::$db->fetch_array($rows))) {
             $item = new RSSItem($row['tl'], $this->GetLink($row['id']), $row['intro'], $row['dp']);
             $item->modTitle = $this->lang['title'];
             array_push($ret, $item);
@@ -64,7 +64,7 @@ class NewsModule extends Ab_Module {
     }
 
     public function RssMetaLink() {
-        return $this->registry->adress->host."/rss/news/";
+        return Ab_URI::fetch_host()."/rss/news/";
     }
 }
 

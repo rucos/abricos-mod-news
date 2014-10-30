@@ -58,7 +58,8 @@ if ($updateManager->isInstall()) {
 					Мы рады сообщить Вам о запуске нашего сайта.
 				</p>
 				<p>
-					Для работы сайта мы используем платформу <a href='http://abricos.org' title='Abricos - система управления сайтом (CMS), платформа интернет-приложений (WebOS)'>Абрикос</a>,
+					Для работы сайта мы используем платформу
+					<a href='http://abricos.org' title='Платформа Абрикос - система управления сайтом'>Абрикос</a>,
 					потому что именно на этой платформе мы сможем реализовать для Вас
 					практически безграничные возможности.
 				</p>
@@ -71,7 +72,7 @@ if ($updateManager->isInstall()) {
 					We are pleased to announce the launch of our website.
 				</p>
 				<p>
-					For site work, we use <a href='http://abricos.org' title='Abricos Platform - CMS, WebOS'>Abricos Platrofm</a>,
+					For site work, we use <a href='http://abricos.org' title='Abricos Platform - content managment system, WebOS'>Abricos Platrofm</a>,
 					because it was on this platform, we can realize for you virtually limitless possibilities.
 				</p>
 			";

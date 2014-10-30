@@ -12,7 +12,7 @@ $brick = Brick::$builder->brick;
 $param = $brick->param;
 $manager = Abricos::GetModule('news')->GetManager();
 
-$newsid = intval($this->registry->adress->dir[1]);
+$newsid = intval(Abricos::$adress->dir[1]);
 
 $row = $manager->News($newsid, true);
 if (empty($row)) {
