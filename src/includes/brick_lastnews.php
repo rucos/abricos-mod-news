@@ -19,7 +19,7 @@ $hideintro = $brick->param->param['hideintro'];
 if (empty($hideintro) && !empty($brick->parent)) {
     $hideintro = $brick->parent->param->param['hideintro'];
 }
-$dateFormat = Brick::$builder->phrase->Get('news', 'date_format', "Y-m-d");
+$dateFormat = $mod->GetPhrases()->Get('date_format', "Y-m-d");
 $baseUrl = "/".$mod->takelink."/";
 
 $lst = "";

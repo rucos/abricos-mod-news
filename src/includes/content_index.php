@@ -19,11 +19,11 @@ $page = intval(substr($tag, 4, strlen($tag) - 4));
 $mod = Abricos::GetModule('news');
 $manager = $mod->GetManager();
 
-$phrase = Brick::$builder->phrase;
+$phs = $mod->GetPhrases();
 
 // кол-во новостей на странице
-$limit = $phrase->Get('news', 'page_count', 10);
-$dateFormat = $phrase->Get('news', 'date_format', "Y-m-d");
+$limit = $phs->Get('page_count', 10);
+$dateFormat = $phs->Get('date_format', "Y-m-d");
 
 $baseUrl = "/".$mod->takelink."/";
 
