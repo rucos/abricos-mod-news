@@ -51,7 +51,9 @@ Brick::$builder->LoadBrickS('sitemap', 'paginator', $brick, array("p" => array(
     "uri" => $baseUrl
 )));
 
-$title = $mod->lang['content']['index']['1'];
+$i18n = $mod->GetI18n();
+
+$title = $i18n['content']['index']['1'];
 $title = $phrase->Get('news', 'list_meta_title', $title);
 
 // Вывод заголовка страницы

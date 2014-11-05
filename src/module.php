@@ -13,7 +13,7 @@ class NewsModule extends Ab_Module {
     private $_manager = null;
 
     public function NewsModule() {
-        $this->version = "0.2.7-dev";
+        $this->version = "0.2.7";
         $this->name = "news";
         $this->takelink = "news";
 
@@ -54,10 +54,11 @@ class NewsModule extends Ab_Module {
     public function RSS_GetItemList($inBosUI = false) {
         $ret = array();
 
+        $i18n = $this->GetI18n();
         $rows = $this->GetManager()->NewsList(1, 10);
         while (($row = Abricos::$db->fetch_array($rows))) {
             $item = new RSSItem($row['tl'], $this->GetLink($row['id']), $row['intro'], $row['dp']);
-            $item->modTitle = $this->lang['title'];
+            $item->modTitle = $i18n['title'];
             array_push($ret, $item);
         }
         return $ret;
