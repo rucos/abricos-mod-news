@@ -1,5 +1,6 @@
 <?php
 return array(
+    "title" => "Новости",
     'brick' => array(
         'lastnews' => array(
             "1" => "Все новости"
