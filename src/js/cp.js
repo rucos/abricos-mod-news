@@ -10,7 +10,7 @@ Component.requires = {
 };
 Component.entryPoint = function(){
 	
-	if (Brick.Permission.check('news', '30') != 1){ return; }
+	if (Brick.AppRoles.check('news', '30')){ return; }
 	
 	var cp = Brick.mod.user.cp;
 	

@@ -12,15 +12,19 @@ var Component = new Brick.Component();
 Component.requires = {
     yahoo: ['tabview', 'dragdrop'],
     mod: [
-        {name: 'news', files: ['roles.js']},
         {name: 'sys', files: ['editor.js', 'container.js', 'data.js', 'old-form.js']},
         {name: 'widget', files: ['calendar.js']}
     ]
 };
 Component.entryPoint = function(NS){
 
+    NS.roles = new Brick.AppRoles('{C#MODNAME}', {
+        isAdmin: 50,
+        isWrite: 30,
+        isView: 10
+    });
+
     var Dom = YAHOO.util.Dom,
-        E = YAHOO.util.Event,
         L = YAHOO.lang;
 
     var API = NS.API,
