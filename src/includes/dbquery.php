@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version $Id$
  * @package Abricos
  * @subpackage News
  * @copyright Copyright (C) 2010 Abricos. All rights reserved.
@@ -11,6 +10,11 @@
 class NewsQuery {
 
     public static function NewsAppend(Ab_Database $db, $userid, $d) {
+        $d->body = isset($d->body) ? $d->body : '';
+        $d->img = isset($d->img) ? $d->img : '';
+        $d->srcnm = isset($d->srcnm) ? $d->srcnm : '';
+        $d->srclnk = isset($d->srclnk) ? $d->srclnk : '';
+
         $contentid = Ab_CoreQuery::CreateContent($db, $d->body, 'news');
         $sql = "
 			INSERT INTO ".$db->prefix."ns_news (
