@@ -13,6 +13,11 @@ require_once 'dbquery.php';
 class NewsManager extends Ab_ModuleManager {
 
     /**
+     * @var NewsManager
+     */
+    public static $instance;
+
+    /**
      *
      * @var NewsModule
      */
@@ -20,6 +25,7 @@ class NewsManager extends Ab_ModuleManager {
 
     public function __construct(NewsModule $module) {
         parent::__construct($module);
+        NewsManager::$instance = $this;
     }
 
     /**

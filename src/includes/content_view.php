@@ -10,7 +10,8 @@
 $brick = Brick::$builder->brick;
 
 $param = $brick->param;
-$manager = Abricos::GetModule('news')->GetManager();
+Abricos::GetModule('news')->GetManager();
+$manager = NewsManager::$instance;
 
 $newsid = intval(Abricos::$adress->dir[1]);
 
@@ -34,6 +35,6 @@ if (!empty($row['tl'])) {
     Brick::$builder->SetGlobalVar('meta_title', $row['tl']);
 }
 
-Brick::$contentId = $row['contentid'];
+Brick::$contentId = $row['ctid'];
 
 ?>

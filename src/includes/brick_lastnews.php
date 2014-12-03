@@ -16,7 +16,7 @@ $manager = $mod->GetManager();
 
 $limit = $brick->param->param['count'];
 $hideintro = $brick->param->param['hideintro'];
-if (empty($hideintro) && !empty($brick->parent)) {
+if (empty($hideintro) && !empty($brick->parent) && isset($brick->parent->param->param['hideintro'])) {
     $hideintro = $brick->parent->param->param['hideintro'];
 }
 $dateFormat = $mod->GetPhrases()->Get('date_format', "Y-m-d");
