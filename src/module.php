@@ -10,9 +10,16 @@
  */
 class NewsModule extends Ab_Module {
 
+    /**
+     * @var NewsModule
+     */
+    public static $instance;
+
     private $_manager = null;
 
     public function NewsModule() {
+        NewsModule::$instance = $this;
+
         $this->version = "0.2.7";
         $this->name = "news";
         $this->takelink = "news";
