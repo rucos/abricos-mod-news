@@ -1,114 +1,81 @@
 var Component = new Brick.Component();
 Component.requires = {
-    yahoo: ['tabview', 'dragdrop'],
     mod: [
         {name: 'sys', files: ['editor.js', 'container.js', 'data.js', 'old-form.js']},
-        {name: 'widget', files: ['calendar.js']}
+        {name: 'widget', files: ['calendar.js']},
+        {name: '{C#MODNAME}', files: ['newsList.js', 'lib.js']}
     ]
 };
 Component.entryPoint = function(NS){
 
-    NS.roles = new Brick.AppRoles('{C#MODNAME}', {
-        isAdmin: 50,
-        isWrite: 30,
-        isView: 10
-    });
+    var Y = Brick.YUI,
+        COMPONENT = this,
+        SYS = Brick.mod.sys;
 
-    var Dom = YAHOO.util.Dom,
-        L = YAHOO.lang;
+    var DATA = NS.data || (NS.data = new Brick.util.data.byid.DataSet('news'));
 
-    var API = NS.API,
-        R = NS.roles;
-
-    NS.data = NS.data || new Brick.util.data.byid.DataSet('news');
-
-    var DATA = NS.data;
-
-    var buildTemplate = this.buildTemplate;
-
-    var EditorPanel = function(newsId){
-        this.newsId = newsId * 1 || 0;
-
-        EditorPanel.superclass.constructor.call(this, {
-            fixedcenter: true,
-            width: '830px'
-        });
-    };
-    YAHOO.extend(EditorPanel, Brick.widget.Dialog, {
-        el: function(name){
-            return Dom.get(this._TId['editor'][name]);
-        },
-        elv: function(name){
-            return Brick.util.Form.getValue(this.el(name));
-        },
-        setelv: function(name, value){
-            Brick.util.Form.setValue(this.el(name), value);
-        },
-        initTemplate: function(){
-            buildTemplate(this, 'editor');
-            return this._T['editor'];
-        },
-        onLoad: function(){
-
-            var TM = this._TM, gel = function(n){
-                return TM.getEl('editor.' + n);
-            };
-            new YAHOO.widget.TabView(gel('tabpage'));
-
-            gel('bcancel').disabled = 'disabled';
+    NS.NewsEditorWidget = Y.Base.create('newsEditorWidget', SYS.AppWidget, [], {
+        onInitAppWidget: function(err, appInstance, options){
+            var tp = this.template;
 
             var Editor = Brick.widget.Editor;
 
-            this.editorIntro = new Editor(gel('bodyint'), {
-                'mode': Editor.MODE_VISUAL
-            });
+            var instance = this;
+            setTimeout(function(){ // bugfix
+                instance.editorIntro = new Editor(tp.gel('bodyint'), {
+                    'mode': Editor.MODE_VISUAL
+                });
 
-            this.editorBody = new Editor(gel('bodyman'), {
-                'mode': Editor.MODE_VISUAL
-            });
+                instance.editorBody = new Editor(tp.gel('bodyman'), {
+                    'mode': Editor.MODE_VISUAL
+                });
+            }, 300);
 
-            this.pubDateTime = new Brick.mod.widget.DateInputWidget(gel('pdt'), {
+            this.pubDateTime = new Brick.mod.widget.DateInputWidget(tp.gel('pdt'), {
                 'date': null,
                 'showTime': true
             });
 
             // менеджер файлов
             if (Brick.componentExists('filemanager', 'api')){
-                this.el('fm').style.display = '';
-                this.el('fmwarn').style.display = 'none';
+                tp.toggleView(true, 'fm', 'fmwarn');
             }
 
-            if (this.newsId > 0){
+            if (this.get('newsid') > 0){
                 this.initTables();
                 if (DATA.isFill(this.tables)){
                     this.renderElements();
                 }
                 DATA.onComplete.subscribe(this.dsComplete, this, true);
+                DATA.request(true);
             } else {
                 this.renderElements();
             }
         },
+        destructor: function(){
+            this.editorIntro.destroy();
+            this.editorBody.destroy();
 
+            if (this.get('newsid') > 0){
+                DATA.onComplete.unsubscribe(this.dsComplete);
+            }
+        },
         dsComplete: function(type, args){
-            if (args[0].checkWithParam('news', {id: this.newsId})){
+            console.log(arguments);
+            if (args[0].checkWithParam('news', {id: this.get('newsid')})){
                 this.renderElements();
             }
         },
-
         initTables: function(){
             this.tables = {'news': DATA.get('news', true)};
-            this.rows = this.tables['news'].getRows({id: this.newsId});
+            this.rows = this.tables['news'].getRows({id: this.get('newsid')});
         },
-
         renderElements: function(){
+            var tp = this.template,
+                newsid = this.get('newsid');
 
-            var bsave = this.el('bsave');
-            var bdraft = this.el('bdraft');
-            var bpub = this.el('bpub');
-
-            if (this.newsId == 0){
-                bsave.style.display = 'none';
-            } else {
+            tp.toggleView(newsid > 0, 'bsave', 'bpub,bdraft');
+            if (newsid > 0){
                 var row = this.rows.getByIndex(0);
                 var news = row.cell;
 
@@ -116,124 +83,95 @@ Component.entryPoint = function(NS){
                 this.editorBody.setContent(news['body']);
 
                 if (news['dp'] > 0){
-                    bpub.style.display = 'none';
+                    tp.hide('bpub');
                 }
 
-                bdraft.style.display = 'none';
-                this.setelv('title', news['tl']);
-                this.setelv('srcname', news['srcnm']);
-                this.setelv('srclink', news['srclnk']);
+                tp.hide('bnewsDraft');
+                tp.setValue({
+                    'title': news['tl'],
+                    'srcname': news['srcnm'],
+                    'srclink': news['srclnk']
+                });
                 this.setImage(news['img']);
 
                 this.pubDateTime.setValue(news['dp'] == 0 ? null : new Date(news['dp'] * 1000));
             }
 
-            this.el('bcancel').disabled = '';
+            tp.one('bcancel').set('disabled', '');
         },
-
-        destroy: function(){
-            this.editorIntro.destroy();
-            this.editorBody.destroy();
-
-            if (this.newsId > 0){
-                DATA.onComplete.unsubscribe(this.dsComplete);
-            }
-            EditorPanel.superclass.destroy.call(this);
+        newsDraft: function(){
+            this.save('newsDraft');
         },
-
-        onClick: function(el){
-            var tp = this._TId['editor'];
-            switch (el.id) {
-                case tp['bcancel']:
-                    this.close();
-                    return true;
-                case tp['bsave']:
-                    this.save();
-                    return true;
-                case tp['bpub']:
-                    this.publish();
-                    return true;
-                case tp['bdraft']:
-                    this.draft();
-                    return true;
-                case tp['bimgsel']:
-                    this.openImage();
-                    return true;
-                case tp['bimgdel']:
-                    this.setImage('');
-                    return true;
-            }
-        },
-        setImage: function(imageid){
-            this.imageid = imageid;
-            var img = this.el('image');
-            img.src = imageid ? '/filemanager/i/' + imageid + '/news.gif' : '';
-        },
-        openImage: function(){
-            var __self = this;
-
-            Brick.Component.API.fire('filemanager', 'api', 'showFileBrowserPanel', function(result){
-                __self.setImage(result.file.id);
-            });
-        },
-        draft: function(){
-            this.save('draft');
-        },
-        publish: function(){
-            this.save('publish');
+        newsPublish: function(){
+            this.save('newsPublish');
         },
         save: function(act){
             act = act || "";
 
             this.initTables();
 
-            var dtp = this.pubDateTime.getValue();
+            var tp = this.template,
+                newsid = this.get('newsid'),
+                dtp = this.pubDateTime.getValue();
 
             var tableNews = DATA.get('news');
-            var row = this.newsId > 0 ? this.rows.getByIndex(0) : tableNews.newRow();
+            var row = newsid > 0 ? this.rows.getByIndex(0) : tableNews.newRow();
             row.update({
-                'tl': this.elv('title'),
+                'tl': tp.getValue('title'),
                 'intro': this.editorIntro.getContent(),
                 'body': this.editorBody.getContent(),
-                'srcnm': this.elv('srcname'),
-                'srclnk': this.elv('srclink'),
+                'srcnm': tp.getValue('srcname'),
+                'srclnk': tp.getValue('srclink'),
                 'img': this.imageid
             });
-            if (act == "publish"){
-                if (L.isNull(dtp)){
+            if (act == "newsPublish"){
+                if (!dtp){
                     dtp = new Date();
                 }
                 row.update({'dp': Math.round(dtp.getTime() / 1000)});
-            } else if (act == "draft"){
+            } else if (act == "newsDraft"){
                 row.update({'dp': 0});
             } else {
-                row.update({'dp': L.isNull(dtp) ? 0 : Math.round(dtp.getTime() / 1000)});
+                row.update({'dp': !dtp ? 0 : Math.round(dtp.getTime() / 1000)});
             }
             if (row.isNew()){
                 this.rows.add(row);
             }
             if (!row.isNew() && !row.isUpdate()){
-                this.close();
+                this.go('manager.view');
                 return;
             }
             tableNews.applyChanges();
             var tableNewsList = DATA.get('newslist');
-            if (!L.isNull(tableNewsList)){
+            if (tableNewsList){
                 tableNewsList.clear();
                 DATA.get('newscount').clear();
             }
             DATA.request();
-            this.close();
+            this.go('manager.view');
+        }
+    }, {
+        ATTRS: {
+            component: {value: COMPONENT},
+            templateBlockName: {value: 'widget'},
+            newsid: {value: 0}
+        },
+        CLICKS: {
+            cancel: {
+                event: function(){
+                    this.go('manager.view');
+                }
+            },
+            save: 'save',
+            publish: 'newsPublish',
+            draft: 'newsDraft'
         }
     });
 
-    NS.EditorPanel = EditorPanel;
-
-    API.showEditorPanel = function(newsId){
-        R.load(function(){
-            new NS.EditorPanel(newsId);
-            DATA.request(true);
-        });
+    NS.NewsEditorWidget.parseURLParam = function(args){
+        return {
+            newsid: args[0] | 0
+        };
     };
 
 };

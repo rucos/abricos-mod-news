@@ -42,6 +42,7 @@ class NewsQuery {
     }
 
     public static function NewsUpdate(Ab_Database $db, $d){
+        $d->img = isset($d->img) ? $d->img : '';
 
         $info = NewsQuery::NewsInfo($db, $d->id);
         Ab_CoreQuery::ContentUpdate($db, $info['ctid'], $d->body);

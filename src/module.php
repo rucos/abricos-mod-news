@@ -20,7 +20,7 @@ class NewsModule extends Ab_Module {
 
     private $_manager = null;
 
-    public function NewsModule() {
+    public function NewsModule(){
         NewsModule::$instance = $this;
 
         $this->version = "0.2.7";
@@ -35,10 +35,10 @@ class NewsModule extends Ab_Module {
      *
      * @return string
      */
-    public function GetContentName() {
+    public function GetContentName(){
         $adress = Abricos::$adress;
 
-        if ($adress->level == 2 && substr($adress->dir[1], 0, 4) != 'page') {
+        if ($adress->level == 2 && substr($adress->dir[1], 0, 4) != 'page'){
             return "view";
         }
         return "index";
@@ -49,24 +49,24 @@ class NewsModule extends Ab_Module {
      *
      * @return NewsManager
      */
-    public function GetManager() {
-        if (is_null($this->_manager)) {
+    public function GetManager(){
+        if (is_null($this->_manager)){
             require_once 'includes/manager.php';
             $this->_manager = new NewsManager($this);
         }
         return $this->_manager;
     }
 
-    public function GetLink($newsid) {
+    public function GetLink($newsid){
         return Ab_URI::fetch_host()."/".$this->takelink."/".$newsid."/";
     }
 
-    public function RSS_GetItemList($inBosUI = false) {
+    public function RSS_GetItemList($inBosUI = false){
         $ret = array();
 
         $i18n = $this->GetI18n();
         $rows = $this->GetManager()->NewsList(1, 10);
-        while (($row = Abricos::$db->fetch_array($rows))) {
+        while (($row = Abricos::$db->fetch_array($rows))){
             $item = new RSSItem($row['tl'], $this->GetLink($row['id']), $row['intro'], $row['dp']);
             $item->modTitle = $i18n['title'];
             array_push($ret, $item);
@@ -74,9 +74,14 @@ class NewsModule extends Ab_Module {
         return $ret;
     }
 
-    public function RssMetaLink() {
+    public function RssMetaLink(){
         return Ab_URI::fetch_host()."/rss/news/";
     }
+
+    public function Bos_IsMenu(){
+        return true;
+    }
+
 }
 
 
@@ -88,7 +93,7 @@ class NewsAction {
 
 class NewsPermission extends Ab_UserPermission {
 
-    public function __construct(NewsModule $module) {
+    public function __construct(NewsModule $module){
         $defRoles = array(
             new Ab_UserRole(NewsAction::VIEW, Ab_UserGroup::GUEST),
             new Ab_UserRole(NewsAction::VIEW, Ab_UserGroup::REGISTERED),
@@ -100,7 +105,7 @@ class NewsPermission extends Ab_UserPermission {
         parent::__construct($module, $defRoles);
     }
 
-    public function GetRoles() {
+    public function GetRoles(){
         return array(
             NewsAction::VIEW => $this->CheckAction(NewsAction::VIEW),
             NewsAction::WRITE => $this->CheckAction(NewsAction::WRITE),
@@ -109,7 +114,6 @@ class NewsPermission extends Ab_UserPermission {
     }
 }
 
-Abricos::GetModule('comment');
 Abricos::ModuleRegister(new NewsModule());
 
 ?>

@@ -87,9 +87,6 @@ class NewsManager extends Ab_ModuleManager {
     }
 
     public function DSProcess($name, $rows){
-        $p = $rows->p;
-        $db = $this->db;
-
         switch ($name){
             case 'news':
                 foreach ($rows as $r){
@@ -106,7 +103,6 @@ class NewsManager extends Ab_ModuleManager {
 
     public function DSGetData($name, $rows){
         $p = $rows->p;
-        $db = $this->db;
 
         switch ($name){
             case 'newslist':
@@ -198,6 +194,23 @@ class NewsManager extends Ab_ModuleManager {
         }
         NewsQuery::NewsPublish($this->db, $id, $this->userid);
     }
+
+    public function Bos_MenuData(){
+        if (!$this->IsAdminRole()){
+            return null;
+        }
+        $i18n = $this->module->I18n();
+        return array(
+            array(
+                "name" => "news",
+                "title" => $i18n->Translate('title'),
+                "icon" => "/modules/news/images/cp_icon.gif",
+                "url" => "news/wspace/ws",
+                "parent" => "controlPanel"
+            )
+        );
+    }
+
 }
 
 ?>
