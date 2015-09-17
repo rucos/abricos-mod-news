@@ -1,19 +1,16 @@
 <?php
 /**
- * Список последних новостей
- *
- * @version $Id$
  * @package Abricos
  * @subpackage News
- * @copyright Copyright (C) 2012 Abricos All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @copyright 2008-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
+ * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
 $brick = Brick::$builder->brick;
 $p = $brick->param->param;
 
-if ($brick->child[0]->viewcount == 0 && !$p['showempty']) {
+if ($brick->child[0]->viewcount == 0 && !$p['showempty']){
     $brick->content = "";
     return;
 }
@@ -21,7 +18,7 @@ if ($brick->child[0]->viewcount == 0 && !$p['showempty']) {
 $modRSS = Abricos::GetModule('rss');
 
 $rss = "";
-if (!empty($modRSS)) {
+if (!empty($modRSS)){
     $rss = $brick->param->var['rss'];
 }
 

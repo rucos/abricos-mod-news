@@ -1,29 +1,31 @@
 .mod-news .editor {
-	position: relative;
+    position: relative;
 }
 
 .mod-news .editor .iit {
-	margin-top: .5em;
-	margin-bottom: 1.5em;
-	margin-left: .5em;
+    margin-top: .5em;
+    margin-bottom: 1.5em;
+    margin-left: .5em;
 }
+
 .mod-news .editor h3 {
-	
+
 }
+
 .mod-news .editor .yui-navset {
-	padding-top: 6px;
+    padding-top: 6px;
 }
 
 .mod-news .editor .buttons {
-	position: absolute;
-	top: 0;
-	right: 10px;
+    position: absolute;
+    top: 0;
+    right: 10px;
 }
 
 .mod-news .editor .nimage {
-	margin: 3px;
-	overflow-y: auto; 
-	width: 300px; 
-	height: 300px;
-	border:1px solid #CBCBCB;
+    margin: 3px;
+    overflow-y: auto;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #CBCBCB;
 }

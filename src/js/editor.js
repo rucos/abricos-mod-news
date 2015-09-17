@@ -1,13 +1,3 @@
-/*
- * @copyright Copyright (C) 2008 Abricos All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
-
-/**
- * @module News
- * @namespace Brick.mod.news
- */
-
 var Component = new Brick.Component();
 Component.requires = {
     yahoo: ['tabview', 'dragdrop'],
@@ -106,7 +96,7 @@ Component.entryPoint = function(NS){
         },
 
         initTables: function(){
-            this.tables = { 'news': DATA.get('news', true) };
+            this.tables = {'news': DATA.get('news', true)};
             this.rows = this.tables['news'].getRows({id: this.newsId});
         },
 

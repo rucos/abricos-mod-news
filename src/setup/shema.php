@@ -1,13 +1,10 @@
 <?php
 /**
- * Структура таблиц модуля
- *
- * @version $Id$
  * @package Abricos
  * @subpackage News
- * @copyright Copyright (C) 2008 Abricos All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @copyright 2008-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
+ * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
 $charset = "CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
@@ -15,42 +12,42 @@ $updateManager = Ab_UpdateManager::$current;
 $db = Abricos::$db;
 $pfx = $db->prefix;
 
-if ($updateManager->isInstall()) {
+if ($updateManager->isInstall()){
     $db->query_write("
 		CREATE TABLE IF NOT EXISTS ".$pfx."ns_cat (
-		  `catid` int(10) unsigned NOT NULL auto_increment,
-		  `parentcatid` int(10) unsigned NOT NULL,
-		  `name` varchar(250) NOT NULL,
-		  `phrase` varchar(250) NOT NULL,
-		  PRIMARY KEY  (`catid`)
+		  catid int(10) unsigned NOT NULL auto_increment,
+		  parentcatid int(10) unsigned NOT NULL,
+		  name varchar(250) NOT NULL,
+		  phrase varchar(250) NOT NULL,
+		  PRIMARY KEY  (catid)
 		)".$charset
     );
 
     $db->query_write("
 		CREATE TABLE IF NOT EXISTS ".$pfx."ns_news (
-		  `newsid` int(10) unsigned NOT NULL auto_increment,
-		  `language` CHAR(2) NOT NULL DEFAULT '' COMMENT 'Язык',
-		  `userid` int(10) unsigned NOT NULL,
-		  `dateline` int(10) unsigned NOT NULL default '0',
-		  `dateedit` int(10) unsigned NOT NULL default '0',
-		  `deldate` int(10) unsigned NOT NULL default '0',
-		  `contentid` int(10) unsigned NOT NULL,
-		  `title` varchar(200) NOT NULL,
-		  `intro` text NOT NULL,
-		  `imageid` varchar(8) default NULL,
-		  `published` int(10) unsigned NOT NULL default '0',
-		  `source_name` varchar(200) default NULL,
-		  `source_link` varchar(200) default NULL,
-		  PRIMARY KEY  (`newsid`)
+		  newsid int(10) unsigned NOT NULL auto_increment,
+		  language CHAR(2) NOT NULL DEFAULT '' COMMENT 'Язык',
+		  userid int(10) unsigned NOT NULL,
+		  dateline int(10) unsigned NOT NULL default '0',
+		  dateedit int(10) unsigned NOT NULL default '0',
+		  deldate int(10) unsigned NOT NULL default '0',
+		  contentid int(10) unsigned NOT NULL,
+		  title varchar(200) NOT NULL,
+		  intro text NOT NULL,
+		  imageid varchar(8) default NULL,
+		  published int(10) unsigned NOT NULL default '0',
+		  source_name varchar(200) default NULL,
+		  source_link varchar(200) default NULL,
+		  PRIMARY KEY  (newsid)
 		)".$charset
     );
 
-    if (Ab_UpdateManager::$isCoreInstall) {
+    if (Ab_UpdateManager::$isCoreInstall){
         // Идет инсталляция платформа
 
         $d = new stdClass();
 
-        if (Abricos::$LNG == 'ru') {
+        if (Abricos::$LNG == 'ru'){
             $d->tl = "Рождение сайта";
             $d->intro = "
 				<p>Уважаемые посетители!</p>
@@ -83,17 +80,17 @@ if ($updateManager->isInstall()) {
         NewsQuery::NewsAppend($db, 1, $d);
     }
 }
-if ($updateManager->isUpdate('0.2.2')) {
+if ($updateManager->isUpdate('0.2.2')){
 
     Abricos::GetModule('news')->permission->Install();
 
 }
 
-if ($updateManager->isUpdate('0.2.6') && !$updateManager->isInstall()) {
+if ($updateManager->isUpdate('0.2.6') && !$updateManager->isInstall()){
 
     $db->query_write("
 		ALTER TABLE ".$pfx."ns_news
-		ADD `language` CHAR(2) NOT NULL DEFAULT '' COMMENT 'Язык'
+		ADD language CHAR(2) NOT NULL DEFAULT '' COMMENT 'Язык'
 	");
     $db->query_write("UPDATE ".$pfx."ns_news SET language='ru'");
 

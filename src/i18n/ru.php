@@ -14,7 +14,6 @@ return array(
             "1" => "Канал новостей в формате RSS",
             "2" => "Новости"
         )
-
     ),
     'content' => array(
         'index' => array(
@@ -23,7 +22,6 @@ return array(
         'view' => array(
             "1" => "Новость не найдена"
         )
-
     )
 );
 ?>

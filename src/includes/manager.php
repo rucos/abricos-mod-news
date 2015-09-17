@@ -1,11 +1,10 @@
 <?php
 /**
- * @version $Id$
  * @package Abricos
  * @subpackage News
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @copyright 2008-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
+ * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
 require_once 'dbquery.php';
@@ -23,7 +22,7 @@ class NewsManager extends Ab_ModuleManager {
      */
     public $module = null;
 
-    public function __construct(NewsModule $module) {
+    public function __construct(NewsModule $module){
         parent::__construct($module);
         NewsManager::$instance = $this;
     }
@@ -31,15 +30,15 @@ class NewsManager extends Ab_ModuleManager {
     /**
      * Роль администратора новостей: редактор всех новостей
      */
-    public function IsAdminRole() {
+    public function IsAdminRole(){
         return $this->IsRoleEnable(NewsAction::ADMIN);
     }
 
     /**
      * Роль публикатора новостей: редактор только своих новостей
      */
-    public function IsWriteRole() {
-        if ($this->IsAdminRole()) {
+    public function IsWriteRole(){
+        if ($this->IsAdminRole()){
             return true;
         }
         return $this->IsRoleEnable(NewsAction::WRITE);
@@ -48,32 +47,32 @@ class NewsManager extends Ab_ModuleManager {
     /**
      * Роль просмотра новостей: только просмотр опубликованных новостей
      */
-    public function IsViewRole() {
-        if ($this->IsWriteRole()) {
+    public function IsViewRole(){
+        if ($this->IsWriteRole()){
             return true;
         }
         return $this->IsRoleEnable(NewsAction::VIEW);
     }
 
-    public function IsNewsWriteAccess($newid) {
-        if (!$this->IsWriteRole()) {
+    public function IsNewsWriteAccess($newid){
+        if (!$this->IsWriteRole()){
             return false;
         }
-        if ($this->IsAdminRole()) {
+        if ($this->IsAdminRole()){
             return true;
         }
 
         $info = NewsQuery::NewsInfo($this->db, $newid);
-        if (empty($info) || $info['uid'] != $this->userid) {
+        if (empty($info) || $info['uid'] != $this->userid){
             return false;
         }
         return true;
     }
 
 
-    public function AJAX($d) {
-        if ($d->type == 'news') {
-            switch ($d->do) {
+    public function AJAX($d){
+        if ($d->type == 'news'){
+            switch ($d->do){
                 case "remove":
                     return $this->NewsRemove($d->id);
                 case "restore":
@@ -87,17 +86,17 @@ class NewsManager extends Ab_ModuleManager {
         return -1;
     }
 
-    public function DSProcess($name, $rows) {
+    public function DSProcess($name, $rows){
         $p = $rows->p;
         $db = $this->db;
 
-        switch ($name) {
+        switch ($name){
             case 'news':
-                foreach ($rows as $r) {
-                    if ($r->f == 'u') {
+                foreach ($rows as $r){
+                    if ($r->f == 'u'){
                         $this->NewsUpdate($r->d);
                     }
-                    if ($r->f == 'a') {
+                    if ($r->f == 'a'){
                         $this->NewsAppend($r->d);
                     }
                 }
@@ -105,11 +104,11 @@ class NewsManager extends Ab_ModuleManager {
         }
     }
 
-    public function DSGetData($name, $rows) {
+    public function DSGetData($name, $rows){
         $p = $rows->p;
         $db = $this->db;
 
-        switch ($name) {
+        switch ($name){
             case 'newslist':
                 return $this->NewsList($p->page, $p->limit);
             case 'newscount':
@@ -125,22 +124,22 @@ class NewsManager extends Ab_ModuleManager {
 
     /* * * * * * * * * * * * Чтение новостей * * * * * * * * * * * */
 
-    public function News($newsid, $retarray = false) {
-        if (!$this->IsViewRole()) {
+    public function News($newsid, $retarray = false){
+        if (!$this->IsViewRole()){
             return;
         }
         return NewsQuery::News($this->db, $newsid, $this->userid, $retarray);
     }
 
-    public function NewsList($page = 1, $limit = 10) {
-        if (!$this->IsViewRole()) {
+    public function NewsList($page = 1, $limit = 10){
+        if (!$this->IsViewRole()){
             return;
         }
         return NewsQuery::NewsList($this->db, $this->userid, $page, $limit);
     }
 
-    public function NewsCount($retvalue = false) {
-        if (!$this->IsViewRole()) {
+    public function NewsCount($retvalue = false){
+        if (!$this->IsViewRole()){
             return;
         }
         return NewsQuery::NewsCount($this->db, $this->userid, $retvalue);
@@ -153,8 +152,8 @@ class NewsManager extends Ab_ModuleManager {
      *
      * @param Object $d
      */
-    public function NewsAppend($d) {
-        if (!$this->IsWriteRole()) {
+    public function NewsAppend($d){
+        if (!$this->IsWriteRole()){
             return;
         }
         NewsQuery::NewsAppend($this->db, $this->userid, $d);
@@ -165,36 +164,36 @@ class NewsManager extends Ab_ModuleManager {
      *
      * @param Object $d
      */
-    public function NewsUpdate($d) {
-        if (!$this->IsNewsWriteAccess($d->id)) {
+    public function NewsUpdate($d){
+        if (!$this->IsNewsWriteAccess($d->id)){
             return;
         }
         NewsQuery::NewsUpdate($this->db, $d);
     }
 
-    public function NewsRemove($id) {
-        if (!$this->IsNewsWriteAccess($id)) {
+    public function NewsRemove($id){
+        if (!$this->IsNewsWriteAccess($id)){
             return;
         }
         NewsQuery::NewsRemove($this->db, $id);
     }
 
-    public function NewsRestore($id) {
-        if (!$this->IsNewsWriteAccess($id)) {
+    public function NewsRestore($id){
+        if (!$this->IsNewsWriteAccess($id)){
             return;
         }
         NewsQuery::NewsRestore($this->db, $id);
     }
 
-    public function NewsRecycleClear() {
-        if (!$this->IsWriteRole()) {
+    public function NewsRecycleClear(){
+        if (!$this->IsWriteRole()){
             return;
         }
         NewsQuery::NewsRecycleClear($this->db, $this->userid);
     }
 
-    public function NewsPublish($id) {
-        if (!$this->IsNewsWriteAccess($id)) {
+    public function NewsPublish($id){
+        if (!$this->IsNewsWriteAccess($id)){
             return;
         }
         NewsQuery::NewsPublish($this->db, $id, $this->userid);

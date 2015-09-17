@@ -1,15 +1,18 @@
 <?php
-
 /**
  * @package Abricos
  * @subpackage News
- * @copyright Copyright (C) 2010 Abricos. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @copyright 2008-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
+ * @author Alexander Kuzmin <roosit@abricos.org>
+ */
+
+/**
+ * Class NewsQuery
  */
 class NewsQuery {
 
-    public static function NewsAppend(Ab_Database $db, $userid, $d) {
+    public static function NewsAppend(Ab_Database $db, $userid, $d){
         $d->body = isset($d->body) ? $d->body : '';
         $d->img = isset($d->img) ? $d->img : '';
         $d->srcnm = isset($d->srcnm) ? $d->srcnm : '';
@@ -38,7 +41,7 @@ class NewsQuery {
         $db->query_write($sql);
     }
 
-    public static function NewsUpdate(Ab_Database $db, $d) {
+    public static function NewsUpdate(Ab_Database $db, $d){
 
         $info = NewsQuery::NewsInfo($db, $d->id);
         Ab_CoreQuery::ContentUpdate($db, $info['ctid'], $d->body);
@@ -57,7 +60,7 @@ class NewsQuery {
         $db->query_write($sql);
     }
 
-    public static function News(Ab_Database $db, $newsid, $userid = 0, $retarray = false) {
+    public static function News(Ab_Database $db, $newsid, $userid = 0, $retarray = false){
         $sql = "
 			SELECT
 				a.newsid as id,
@@ -82,7 +85,7 @@ class NewsQuery {
         return $retarray ? $db->query_first($sql) : $db->query_read($sql);
     }
 
-    public static function NewsInfo(Ab_Database $db, $newsid) {
+    public static function NewsInfo(Ab_Database $db, $newsid){
         $sql = "
 			SELECT 
 				newsid as id,
@@ -107,7 +110,7 @@ class NewsQuery {
      * @param boolean $full Если true, содержит удаленные, черновики
      * @return resource
      */
-    public static function NewsList(Ab_Database $db, $userid = 0, $page = 1, $limit = 10) {
+    public static function NewsList(Ab_Database $db, $userid = 0, $page = 1, $limit = 10){
         $from = $limit * (max($page, 1) - 1);
         $sql = "
 			SELECT
@@ -131,14 +134,14 @@ class NewsQuery {
         return $db->query_read($sql);
     }
 
-    public static function NewsCount(Ab_Database $db, $userid = 0, $retvalue = false) {
+    public static function NewsCount(Ab_Database $db, $userid = 0, $retvalue = false){
         $sql = "
 			SELECT count( newsid ) AS cnt
 			FROM ".$db->prefix."ns_news
 			WHERE ((deldate=0 AND published>0) OR userid=".bkint($userid).") AND language='".bkstr(Abricos::$LNG)."' 
 			LIMIT 1 
 		";
-        if ($retvalue) {
+        if ($retvalue){
             $row = $db->query_first($sql);
             return $row['cnt'];
         } else {
@@ -146,7 +149,7 @@ class NewsQuery {
         }
     }
 
-    public static function NewsRemove(Ab_Database $db, $newsid) {
+    public static function NewsRemove(Ab_Database $db, $newsid){
         $sql = "
 			UPDATE ".$db->prefix."ns_news 
 			SET deldate=".TIMENOW."
@@ -155,7 +158,7 @@ class NewsQuery {
         $db->query_write($sql);
     }
 
-    public static function NewsRestore(Ab_Database $db, $newsid) {
+    public static function NewsRestore(Ab_Database $db, $newsid){
         $sql = "
 			UPDATE ".$db->prefix."ns_news 
 			SET deldate=0
@@ -164,7 +167,7 @@ class NewsQuery {
         $db->query_write($sql);
     }
 
-    public static function NewsRecycleClear(Ab_Database $db, $userid) {
+    public static function NewsRecycleClear(Ab_Database $db, $userid){
         $sql = "
 			DELETE FROM ".$db->prefix."ns_news
 			WHERE deldate > 0 AND userid=".bkint($userid)."
@@ -172,7 +175,7 @@ class NewsQuery {
         $db->query_write($sql);
     }
 
-    public static function NewsPublish(Ab_Database $db, $newsid) {
+    public static function NewsPublish(Ab_Database $db, $newsid){
         $sql = "
 			UPDATE ".$db->prefix."ns_news
 			SET published='".TIMENOW."'
