@@ -8,6 +8,14 @@
  */
 
 $brick = Brick::$builder->brick;
+$p = &$brick->param->param;
+$v = &$brick->param->var;
+
+/** @var NewsModule $mod */
+$mod = Abricos::GetModule('news');
+$app = $mod->GetManager()->GetNews();
+$config = $app->Config();
+
 
 $adr = Abricos::$adress;
 $page = 1;
@@ -16,32 +24,29 @@ if ($adr->level > 1){
     $page = intval(substr($tag, 4, strlen($tag) - 4));
 }
 
-$mod = NewsModule::$instance;
-$manager = $mod->GetManager();
-
-$phs = $mod->GetPhrases();
-
 // кол-во новостей на странице
-$limit = $phs->Get('page_count', 10)->value;
-$dateFormat = $phs->Get('date_format', "Y-m-d")->value;
-
+$limit = $config->page_count;
+$dateFormat = $config->date_format;
 $baseUrl = "/".$mod->takelink."/";
 
 $lst = "";
-$rows = $manager->NewsList($page, $limit);
+$newsList = $app->NewsList(1, $limit);
+$count = $newsList->Count();
 
-while (($row = Abricos::$db->fetch_array($rows))){
-    $lst .= Brick::ReplaceVarByData($brick->param->var['row'], array(
-        "date" => date($dateFormat, $row['dp']),
-        "link" => $baseUrl.$row['id']."/",
-        "title" => $row['tl'],
-        "intro" => $row['intro']
+for ($i = 0; $i < $count; $i++){
+    $news = $newsList->GetByIndex($i);
+    $lst .= Brick::ReplaceVarByData($v['row'], array(
+        "date" => date($dateFormat, $news->published),
+        "link" => $baseUrl.$news->id."/",
+        "title" => $news->title,
+        "intro" => $news->intro
     ));
 }
 
-$brick->param->var['lst'] = $lst;
 
-$newsCount = $manager->NewsCount(true);
+$v['lst'] = $lst;
+
+$newsCount = $app->NewsCount()->count;
 
 // подгрузка кирпича пагинатора с параметрами
 Brick::$builder->LoadBrickS('sitemap', 'paginator', $brick, array(
@@ -53,10 +58,11 @@ Brick::$builder->LoadBrickS('sitemap', 'paginator', $brick, array(
     )
 ));
 
-$i18n = $mod->GetI18n();
-
-$title = $i18n['content']['index']['1'];
-$title = $phs->Get('list_meta_title', $title);
+$title = $config->list_meta_title;
+if (empty($title)){
+    $i18n = $mod->I18n();
+    $title = $i18n->Translate('content.index.1');
+}
 
 // Вывод заголовка страницы
 if (!empty($title)){

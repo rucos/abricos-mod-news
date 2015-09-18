@@ -8,34 +8,38 @@
  */
 
 $brick = Brick::$builder->brick;
-$mod = Abricos::GetModule('news');
-$manager = $mod->GetManager();
+$p = &$brick->param->param;
+$v = &$brick->param->var;
 
-$limit = $brick->param->param['count'];
-$hideintro = $brick->param->param['hideintro'];
+/** @var NewsModule $mod */
+$mod = Abricos::GetModule('news');
+$app = $mod->GetManager()->GetNews();
+$config = $app->Config();
+
+$limit = $p['count'];
+$hideintro = $p['hideintro'];
 if (empty($hideintro) && !empty($brick->parent) && isset($brick->parent->param->param['hideintro'])){
     $hideintro = $brick->parent->param->param['hideintro'];
 }
-$dateFormat = $mod->GetPhrases()->Get('date_format', "Y-m-d");
+
+$dateFormat = $config->date_format;
 $baseUrl = "/".$mod->takelink."/";
 
 $lst = "";
-$rows = $manager->NewsList(1, $limit);
+$newsList = $app->NewsList(1, $limit);
+$count = $newsList->Count();
 
-$viewcount = 0;
-
-while (($row = Abricos::$db->fetch_array($rows))){
-    $viewcount++;
-    $lst .= Brick::ReplaceVarByData($brick->param->var['row'], array(
-        "date" => date($dateFormat, $row['dp']),
-        "link" => $baseUrl.$row['id']."/",
-        "title" => $row['tl'],
-        "intro" => !empty($hideintro) ? '' : $row['intro']
+for ($i = 0; $i < $count; $i++){
+    $news = $newsList->GetByIndex($i);
+    $lst .= Brick::ReplaceVarByData($v['row'], array(
+        "date" => date($dateFormat, $news->published),
+        "link" => $baseUrl.$news->id."/",
+        "title" => $news->title,
+        "intro" => !empty($hideintro) ? '' : $news->intro
     ));
 }
 
-$brick->viewcount = $viewcount;
+$brick->viewcount = $count;
 $brick->param->var['result'] = $lst;
-
 
 ?>

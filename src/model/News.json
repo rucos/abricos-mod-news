@@ -1,0 +1,42 @@
+{
+  "version": "0.1.0",
+  "type": "model",
+  "rolefn": "IsAdminRole",
+  "fields": {
+    "id": {
+      "type": "int"
+    },
+    "title": {
+      "type": "string",
+      "json": "tl"
+    },
+    "intro": {
+      "type": "string",
+      "json": "intro"
+    },
+    "body": {
+      "type": "string",
+      "json": "bd"
+    },
+    "sourceName": {
+      "type": "string",
+      "json": "srcnm"
+    },
+    "sourceURI": {
+      "type": "string",
+      "json": "srcuri"
+    },
+    "dateline": {
+      "type": "date",
+      "json": "dl"
+    },
+    "upddate": {
+      "type": "date",
+      "json": "upd"
+    },
+    "published": {
+      "type": "date",
+      "json": "pub"
+    }
+  }
+}

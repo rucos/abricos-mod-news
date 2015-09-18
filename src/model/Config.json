@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0",
+  "type": "model",
+  "rolefn": "IsAdminRole",
+  "fields": {
+    "date_format": {
+      "type": "string"
+    },
+    "page_count": {
+      "type": "int"
+    },
+    "list_meta_title": {
+      "type": "string",
+      "rolefn": "IsAdminRole"
+    }
+  }
+}

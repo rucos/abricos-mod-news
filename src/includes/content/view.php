@@ -8,33 +8,33 @@
  */
 
 $brick = Brick::$builder->brick;
+$p = &$brick->param->param;
+$v = &$brick->param->var;
 
-$param = $brick->param;
-Abricos::GetModule('news')->GetManager();
-$manager = NewsManager::$instance;
+/** @var NewsModule $mod */
+$mod = Abricos::GetModule('news');
+$app = $mod->GetManager()->GetNews();
+$config = $app->Config();
 
 $newsid = intval(Abricos::$adress->dir[1]);
 
-$row = $manager->News($newsid, true);
-if (empty($row)){
-    $brick->content = $brick->param->var['notfound'];
+$newsItem = $app->NewsItem($newsid);
+
+if (empty($newsItem)){
+    $brick->content = $v['notfound'];
     return;
 }
 
-$var = &$brick->param->var;
+$v['title'] = Brick::ReplaceVar($v['title'], "val", $newsItem->title);
+$v['date'] = Brick::ReplaceVar($v['date'], "val", $newsItem->published > 0 ? rusDateTime(date($newsItem->published)) : $v['notpub']);
+$v['intro'] = Brick::ReplaceVar($v['intro'], "val", $newsItem->intro);
+$v['body'] = Brick::ReplaceVar($v['body'], "val", $newsItem->body);
 
-$var['title'] = Brick::ReplaceVar($var['title'], "val", $row['tl']);
-$var['date'] = Brick::ReplaceVar($var['date'], "val", $row['dp'] > 0 ? rusDateTime(date($row['dp'])) : $brick->param->var['notpub']);
-$var['intro'] = Brick::ReplaceVar($var['intro'], "val", $row['intro']);
-$var['body'] = Brick::ReplaceVar($var['body'], "val", $row['body']);
+$v['source'] = '';
+$v['image'] = '';
 
-$var['source'] = '';
-$var['image'] = '';
-
-if (!empty($row['tl'])){
-    Brick::$builder->SetGlobalVar('meta_title', $row['tl']);
+if (!empty($newsItem->title)){
+    Brick::$builder->SetGlobalVar('meta_title', $newsItem->title);
 }
-
-Brick::$contentId = $row['ctid'];
 
 ?>

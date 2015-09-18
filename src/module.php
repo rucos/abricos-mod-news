@@ -23,7 +23,7 @@ class NewsModule extends Ab_Module {
     public function NewsModule(){
         NewsModule::$instance = $this;
 
-        $this->version = "0.2.7";
+        $this->version = "0.2.8";
         $this->name = "news";
         $this->takelink = "news";
 
