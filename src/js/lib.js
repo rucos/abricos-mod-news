@@ -58,6 +58,9 @@ Component.entryPoint = function(NS){
             newsPublish: {
                 args: ['newsid']
             },
+            newsRemove: {
+                args: ['newsid']
+            },
             config: {
                 attribute: true,
                 type: 'model:Config'

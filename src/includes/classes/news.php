@@ -213,7 +213,6 @@ class News extends AbricosApplication {
         return $ret;
     }
 
-
     public function ConfigToJSON(){
         $res = $this->Config();
         return $this->ResultToJSON('config', $res);

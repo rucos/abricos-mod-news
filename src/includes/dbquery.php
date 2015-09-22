@@ -95,7 +95,9 @@ class NewsQuery {
 				n.dateline,
 				n.published
 			FROM ".$db->prefix."news n
-			WHERE ((deldate=0 AND published>0) OR userid=".bkint(Abricos::$user->id).") AND language='".bkstr(Abricos::$LNG)."'
+			WHERE (published>0 OR userid=".bkint(Abricos::$user->id).")
+			        AND deldate=0
+			        AND language='".bkstr(Abricos::$LNG)."'
 			ORDER BY dateline DESC
 			LIMIT ".$from.",".bkint($limit)."
 		";

@@ -12,8 +12,13 @@ Component.entryPoint = function(NS){
 
     NS.NewsListWidget = Y.Base.create('newsListWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
+            this.reloadList();
+        },
+        reloadList: function(){
+            this.set('waiting', true);
             var page = this.get('page');
-            appInstance.newsList(page, function(err, result){
+            this.get('appInstance').newsList(page, function(err, result){
+                this.set('waiting', false);
                 if (!err){
                     this.set('newsList', result.newsList);
                 }
@@ -54,7 +59,17 @@ Component.entryPoint = function(NS){
                     tp.setHTML('publishButton.published-' + newsid, Brick.dateExt.convert(result.newsItem.get('published')))
                 }
             }, this);
+        },
+        newsRemove: function(newsid){
+            this.set('waiting', true);
+            this.get('appInstance').newsRemove(newsid, function(err, result){
+                this.set('waiting', false);
+                if (!err){
+                    this.reloadList();
+                }
+            }, this);
         }
+
     }, {
         ATTRS: {
             component: {value: COMPONENT},
@@ -63,6 +78,24 @@ Component.entryPoint = function(NS){
             newsList: {value: null}
         },
         CLICKS: {
+            'remove-show': {
+                event: function(e){
+                    var newsid = e.target.getData('id') | 0;
+                    this.template.toggleView(true, 'row.removegroup-' + newsid, 'row.remove-' + newsid);
+                }
+            },
+            'remove-cancel': {
+                event: function(e){
+                    var newsid = e.target.getData('id') | 0;
+                    this.template.toggleView(false, 'row.removegroup-' + newsid, 'row.remove-' + newsid);
+                }
+            },
+            remove: {
+                event: function(e){
+                    var newsid = e.target.getData('id') | 0;
+                    this.newsRemove(newsid);
+                }
+            },
             publish: {
                 event: function(e){
                     var newsid = e.target.getData('id') | 0;
