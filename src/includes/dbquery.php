@@ -123,23 +123,6 @@ class NewsQuery {
         $db->query_write($sql);
     }
 
-    public static function NewsRestore(Ab_Database $db, $newsid){
-        $sql = "
-			UPDATE ".$db->prefix."news 
-			SET deldate=0
-			WHERE newsid=".bkint($newsid)."
-		";
-        $db->query_write($sql);
-    }
-
-    public static function NewsRecycleClear(Ab_Database $db){
-        $sql = "
-			DELETE FROM ".$db->prefix."news
-			WHERE deldate > 0 AND userid=".bkint(Abricos::$user->id)."
-		";
-        $db->query_write($sql);
-    }
-
     public static function NewsPublish(Ab_Database $db, $newsid){
         $sql = "
 			UPDATE ".$db->prefix."news

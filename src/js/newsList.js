@@ -1,127 +1,80 @@
 var Component = new Brick.Component();
 Component.requires = {
     mod: [
-        {name: 'sys', files: ['data.js', 'container.js', 'widgets.js', 'wait.js']}
+        {name: '{C#MODNAME}', files: ['lib.js']}
     ]
 };
 Component.entryPoint = function(NS){
 
-    if (!NS.data){
-        NS.data = new Brick.util.data.byid.DataSet('news');
-    }
-    var DATA = NS.data;
+    var Y = Brick.YUI,
+        COMPONENT = this,
+        SYS = Brick.mod.sys;
 
-    var LW = Brick.widget.LayWait;
-
-    var buildTemplate = this.buildTemplate;
-
-    var NewsListWidget = function(el){
-        var TM = buildTemplate(this, 'widget,table,row,rowwait,rowdel,btnpub');
-
-        var config = {
-            rowlimit: 10,
-            tables: {
-                'list': 'newslist',
-                'count': 'newscount'
-            },
-            tm: TM,
-            paginators: ['widget.pagtop', 'widget.pagbot'],
-            DATA: DATA
-        };
-        NewsListWidget.superclass.constructor.call(this, el, config);
-    };
-
-    YAHOO.extend(NewsListWidget, Brick.widget.TablePage, {
-        initTemplate: function(){
-            return this._T['widget'];
-        },
-        renderTableAwait: function(){
-            var TM = this._TM;
-            TM.getEl("widget.table").innerHTML = TM.replace('table', {
-                'scb': '', 'rows': TM.replace('rowwait')
-            });
-        },
-        renderRow: function(di){
-            return this._TM.replace(di['dd'] > 0 ? 'rowdel' : 'row', {
-                'dl': Brick.dateExt.convert(di['dl']),
-                'tl': di['tl'],
-                'dp': (di['dp'] > 0 ? Brick.dateExt.convert(di['dp']) : this._T['btnpub']),
-                'prv': '/news/' + di['id'] + '/',
-                'scb': '',
-                'id': di['id']
-            });
-        },
-        renderTable: function(lst){
-            this._TM.getEl("widget.table").innerHTML = this._TM.replace('table', {
-                'scb': '', 'rows': lst
-            });
-        },
-        onClick: function(el){
-            var TM = this._TM, T = this._T, TId = this._TId;
-
-            switch (el.id) {
-                case TId['widget']['refresh']:
-                    this.refresh();
-                    return true;
-                case TId['widget']['rcclear']:
-                    this.recycleClear();
-                    return true;
-            }
-
-            var prefix = el.id.replace(/([0-9]+$)/, '');
-            var numid = el.id.replace(prefix, "");
-
-            switch (prefix) {
-                case (TId['rowdel']['restore'] + '-'):
-                    this.restore(numid);
-                    return true;
-                case (TId['row']['remove'] + '-'):
-                    this.remove(numid);
-                    return true;
-                case (TId['btnpub']['id'] + '-'):
-                    this.publish(numid);
-                    return true;
-            }
-            return false;
-        },
-
-        changeStatus: function(commentId){
-            var rows = this.getRows();
-            var row = rows.getById(commentId);
-            row.update({
-                'st': row.cell['st'] == 1 ? 0 : 1,
-                'act': 'status'
-            });
-            row.clearFields('st,act');
-            this.saveChanges();
-        },
-        _createWait: function(){
-            return new LW(this._TM.getEl("widget.table"), true);
-        },
-        _ajax: function(data){
-            var lw = this._createWait(), __self = this;
-            Brick.ajax('news', {
-                'data': data,
-                'event': function(request){
-                    lw.hide();
-                    __self.refresh();
+    NS.NewsListWidget = Y.Base.create('newsListWidget', SYS.AppWidget, [], {
+        onInitAppWidget: function(err, appInstance){
+            var page = this.get('page');
+            appInstance.newsList(page, function(err, result){
+                if (!err){
+                    this.set('newsList', result.newsList);
                 }
+                this.renderList();
+            }, this);
+        },
+        renderList: function(){
+            var newsList = this.get('newsList');
+            if (!newsList){
+                return;
+            }
+
+            var tp = this.template,
+                lst = "";
+
+            newsList.each(function(news){
+                lst += tp.replace('row', [
+                    {
+                        published: news.get('published') ?
+                            Brick.dateExt.convert(news.get('published')) :
+                            tp.replace('publishButton'),
+                        dateline: Brick.dateExt.convert(news.get('dateline'))
+                    },
+                    news.toJSON()
+                ]);
             });
+
+            tp.setHTML('list', tp.replace('table', {rows: lst}));
         },
-        remove: function(newsid){
-            this._ajax({'type': 'news', 'do': 'remove', 'id': newsid});
+        newsPublish: function(newsid){
+            var tp = this.template;
+            tp.hide('publishButton.btn-' + newsid);
+            tp.show('publishButton.loading-' + newsid);
+            this.get('appInstance').newsPublish(newsid, function(err, result){
+                tp.hide('publishButton.loading-' + newsid);
+                if (!err){
+                    tp.show('publishButton.published-' + newsid);
+                    tp.setHTML('publishButton.published-' + newsid, Brick.dateExt.convert(result.newsItem.get('published')))
+                }
+            }, this);
+        }
+    }, {
+        ATTRS: {
+            component: {value: COMPONENT},
+            templateBlockName: {value: 'widget,table,row,publishButton'},
+            page: {value: 1},
+            newsList: {value: null}
         },
-        restore: function(newsid){
-            this._ajax({'type': 'news', 'do': 'restore', 'id': newsid});
-        },
-        recycleClear: function(){
-            this._ajax({'type': 'news', 'do': 'rclear'});
-        },
-        publish: function(newsid){
-            this._ajax({'type': 'news', 'do': 'publish', 'id': newsid});
+        CLICKS: {
+            publish: {
+                event: function(e){
+                    var newsid = e.target.getData('id') | 0;
+                    this.newsPublish(newsid);
+                }
+            },
+            edit: {
+                event: function(e){
+                    var newsid = e.target.getData('id') | 0;
+                    this.go('news.editor', newsid);
+                }
+            }
         }
     });
-
-    NS.NewsListWidget = NewsListWidget;
-
 };

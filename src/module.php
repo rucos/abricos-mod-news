@@ -86,9 +86,9 @@ class NewsModule extends Ab_Module {
 
 
 class NewsAction {
-    const VIEW = 10;
-    const WRITE = 30;
     const ADMIN = 50;
+    const WRITE = 30;
+    const VIEW = 10;
 }
 
 class NewsPermission extends Ab_UserPermission {

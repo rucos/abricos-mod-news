@@ -168,10 +168,4 @@ Component.entryPoint = function(NS){
         }
     });
 
-    NS.NewsEditorWidget.parseURLParam = function(args){
-        return {
-            newsid: args[0] | 0
-        };
-    };
-
 };

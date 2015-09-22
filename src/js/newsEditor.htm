@@ -1,0 +1,95 @@
+<!--{widget}-->
+<div class="newsEditor panel panel-default {v#statusClass}">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-7">
+                <h3 class="panel-title">Редактор новости</h3>
+            </div>
+            <div class="col-md-5">
+                <div class="btn-toolbar pull-right">
+                    <button data-click="save" type="button" class="forSavedNews btn btn-default btn-xs" data-wait="disable">
+                        Сохранить изменения
+                    </button>
+                    <button data-click="publish" type="button" class="forNewNews btn btn-default btn-xs" data-wait="disable">
+                        Опубликовать
+                    </button>
+                    <button data-click="draft" type="button" class="forNewNews btn btn-default btn-xs" data-wait="disable">
+                        Сохранить как черновик
+                    </button>
+                    <button data-click="cancel" type="button" class="btn btn-default btn-xs" data-wait="disable">
+                        Отмена
+                    </button>
+                </div>
+
+                <span data-wait="show" class="pull-right">
+                    <img src="/images/loading.gif"/>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div id="{i#notFound}" class="panel-body text-center hide">
+        <h3>Новость не найдена или не достаточно прав для редактирования</h3>
+    </div>
+    <div id="{i#viewer}" class="panel-body">
+
+        <div class="row form-group">
+            <div class="col-sm-2">
+                <label>Заголовок</label>
+            </div>
+            <div class="col-sm-10">
+                <input id="{i#title}" type="text" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Анонс</label>
+
+            <div id="{i#introEditor}"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Подробная часть новости</label>
+
+            <div id="{i#bodyEditor}" data-rows="12"></div>
+        </div>
+
+        <hr/>
+        <h4>Дата/время публикации новости</h4>
+
+        <div id="{i#publishedWidget}"></div>
+
+        <h4>Источник</h4>
+
+        <div class="form-inline">
+            <div class="form-group">
+                Имя
+                <input id="{i#sourceName}" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                Сайт
+                <input id="{i#sourceURI}" type="text" class="form-control"/>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="text-right">
+            <span data-wait="show">
+                <img src="/images/loading.gif"/>
+            </span>
+            <button data-click="save" type="button" class="forSavedNews btn btn-default" data-wait="disable">
+                Сохранить изменения
+            </button>
+            <button data-click="publish" type="button" class="forNewNews btn btn-default" data-wait="disable">
+                Опубликовать
+            </button>
+            <button data-click="draft" type="button" class="forNewNews btn btn-default" data-wait="disable">
+                Сохранить как черновик
+            </button>
+            <button data-click="cancel" type="button" class="btn btn-default" data-wait="disable">
+                Отмена
+            </button>
+        </div>
+
+    </div>
+</div>

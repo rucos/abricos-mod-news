@@ -23,7 +23,7 @@ class News extends AbricosApplication {
     }
 
     protected function GetStructures(){
-        return 'Config,NewsItem,NewsList';
+        return 'Config,NewsItem';
     }
 
     public function ResponseToJSON($d){
@@ -38,10 +38,6 @@ class News extends AbricosApplication {
                 return $this->NewsSaveToJSON($d->news);
             case "newsRemove":
                 return $this->NewsRemoveToJSON($d->newsid);
-            case "newsRestore":
-                return $this->NewsRestoreToJSON($d->newsid);
-            case "newsRecucleClear":
-                return $this->NewsRecycleClearToJSON();
             case "newsPublish":
                 return $this->NewsPublishToJSON($d->newsid);
 
@@ -81,7 +77,10 @@ class News extends AbricosApplication {
             return 403;
         }
 
+        /** @var NewsList $list */
         $list = $this->models->InstanceClass('NewsList');
+        $list->page = $page;
+
         $rows = NewsQuery::NewsList($this->db, $page, $limit);
         while (($d = $this->db->fetch_array($rows))){
             $list->Add($this->models->InstanceClass('NewsItem', $d));
@@ -106,7 +105,7 @@ class News extends AbricosApplication {
 
     public function NewsItemToJSON($newsid){
         $res = $this->NewsItem($newsid);
-        return $this->ResultToJSON('news', $res);
+        return $this->ResultToJSON('newsItem', $res);
     }
 
     /**
@@ -132,6 +131,66 @@ class News extends AbricosApplication {
         /** @var NewsItem $news */
         $news = $this->models->InstanceClass('NewsItem', $d);
         return $this->_cache['NewsItem'][$newsid] = $news;
+    }
+
+    public function NewsSaveToJSON($d){
+        $res = $this->NewsSave($d);
+        return $this->ResultToJSON('newsSave', $res);
+    }
+
+    public function NewsSave($d){
+        if (!$this->manager->IsAdminRole()){
+            return 403;
+        }
+        $d->id = intval($d->id);
+
+        $utmf = Abricos::TextParser(true);
+        $utm = Abricos::TextParser();
+
+        $d->title = $utmf->Parser($d->title);
+        $d->intro = $utm->Parser($d->intro);
+        $d->body = $utm->Parser($d->body);
+
+        $d->sourceName = $utmf->Parser($d->sourceName);
+        $d->sourceURI = $utmf->Parser($d->sourceURI);
+
+        $d->published = intval($d->published);
+
+        if ($d->id === 0){
+            $d->id = NewsQuery::NewsAppend(Abricos::$db, $d);
+        } else {
+            NewsQuery::NewsUpdate(Abricos::$db, $d->id, $d);
+        }
+
+        $ret = new stdClass();
+        $ret->newsid = $d->id;
+        return $ret;
+    }
+
+    public function NewsPublishToJSON($newsid){
+        $res = $this->NewsPublish($newsid);
+        return $this->ImplodeJSON(
+            $this->NewsItemToJSON($newsid),
+            $this->ResultToJSON('newsPublish', $res)
+        );
+    }
+
+    public function NewsPublish($newsid){
+        if (!$this->manager->IsAdminRole()){
+            return 403;
+        }
+        $news = $this->NewsItem($newsid);
+        if (empty($news)){
+            return 404;
+        }
+        NewsQuery::NewsPublish(Abricos::$db, $newsid);
+
+        $this->CacheClear();
+
+        $ret = new stdClass();
+        $ret->newsid = $newsid;
+        return $ret;
+
     }
 
     public function NewsRemoveToJSON($newsid){

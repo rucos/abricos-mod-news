@@ -1,78 +1,57 @@
 <!--{widget}-->
-<table width="100%">
-    <tr>
-        <td width="50%">
-            <div id='{i#pagtop}'></div>
-        </td>
-        <td width="50%">
-            <div style="text-align: right">
-                <a href="#app=news/wspace/ws/editor/NewsEditorWidget/0/" class="btn btn-default">
-                    {#mod.news.admin.panel.addbutton}
-                </a>
-            </div>
-        </td>
-    </tr>
-</table>
-<div id='{i#table}'></div>
-<table width="100%">
-    <tr>
-        <td width="50%">
-            <div id='{i#pagbot}'></div>
-        </td>
-        <td width="50%" style="text-align: right">
-            <a href="#" id="{i#rcclear}">{#mod.news.admin.panel.recycle}</a>
-        </td>
-    </tr>
-</table>
+<div class="newsList">
+    <div id="{i#list}"></div>
+</div>
 
 <!--{table}-->
-<table class="table">
+<table class="table table-striped table-hover">
     <thead>
     <tr>
-        <th>{#mod.news.admin.table.created}</th>
-        <th>{#mod.news.admin.table.title}</th>
+        <th>Создан</th>
+        <th>Заголовок</th>
         <th></th>
-        <th>{#mod.news.admin.table.published}</th>
+        <th>Опубликован</th>
         <th></th>
         <th></th>
-        {v#scb}
     </tr>
     </thead>
     <tbody>{v#rows}</tbody>
 </table>
-<!--{rowwait}-->
-<tr>
-    <td colspan="7">{#mod.news.manager.rowwait.1}</td>
-</tr>
+
 <!--{row}-->
 <tr>
-    <td>{v#dl}</td>
-    <td>{v#tl}</td>
+    <td>{v#dateline}</td>
+    <td>{v#title}</td>
     <td>
-        <a href="{v#prv}" id="{i#title}-{v#id}" target="_blank" title="{#mod.news.admin.row.title}">
-            {#mod.news.admin.row.title}
+        <a href="/news/{v#id}/" target="_blank" title="Просмотреть новость на страницах сайта">
+            Просмотр
         </a>
     </td>
-    <td>{v#dp}</td>
-    <td><a id="{i#edit}-{v#id}" href="#app=news/wspace/ws/editor/NewsEditorWidget/{v#id}/" >
-        {#mod.news.admin.row.edit}
-    </a></td>
-    <td><a id="{i#remove}-{v#id}" href="#">{#mod.news.admin.row.delete}</a></td>
-    {v#scb}
+    <td>{v#published}</td>
+    <td>
+        <a href="#" data-click="edit" data-id="{v#id}">
+            Править
+        </a>
+    </td>
+    <td>
+        <button id="{i#delete}-{v#id}" type="button" class="btn btn-default btn-xs hide" data-click="remove-show"
+                data-id="{v#id}">
+            Удалить
+        </button>
+        <div id="{i#deletegroup}-{v#id}" class="btn-group hide">
+            <button type="button" class="btn btn-danger btn-xs" data-click="remove" data-id="{v#id}">
+                Удалить?
+            </button>
+            <button type="button" class="btn btn-default btn-xs" data-click="remove-cancel" data-id="{v#id}">
+                Отмена
+            </button>
+        </div>
+    </td>
 </tr>
 
-<!--{rowdel}-->
-<tr>
-    <td style="text-decoration: line-through;">{v#dl}</td>
-    <td style="text-decoration: line-through;">{v#tl}</td>
-    <td><a href="{v#prv}" id="{i#title}-{v#id}" target="_blank" title="{#mod.news.admin.rowdel.prv}">{#mod.news.admin.rowdel.prv}</a>
-    </td>
-    <td colspan="3" align="center" style="text-align: center;"><a id="{i#restore}-{v#id}" href="#">{#mod.news.admin.rowdel.restore}</a>
-    </td>
-    {v#scb}
-</tr>
-<!--{btnpub}--><a id="{i#id}-{v#id}" href="#">{#mod.news.admin.btnpub.title}</a>
-<!--{scbhead}-->
-<th>{#mod.news.admin.scbhead.title}</th>
-<!--{scbrow}-->
-<td><a href="#" id="{i#id}-{v#id}">{#mod.news.admin.scbrow.title}</a></td>
+<!--{publishButton}-->
+<a id="{i#btn}-{v#id}" href="#" data-click="publish" data-id="{v#id}">
+    Опубликовать
+</a>
+<img id="{i#loading}-{v#id}" class="hide" src="/images/loading.gif"/>
+<span id="{i#published}-{v#id}" class="hide"></span>

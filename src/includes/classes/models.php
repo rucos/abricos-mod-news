@@ -21,7 +21,7 @@
  */
 class NewsItem extends AbricosModel {
     protected $_structModule = 'news';
-    protected $_structName = 'News';
+    protected $_structName = 'NewsItem';
 }
 
 /**
@@ -30,6 +30,16 @@ class NewsItem extends AbricosModel {
  * @method NewsItem GetByIndex($index)
  */
 class NewsList extends AbricosModelList {
+    /**
+     * @var int Number of Page
+     */
+    public $page = 1;
+
+    public function ToJSON(){
+        $ret = parent::ToJSON();
+        $ret->page = $this->page;
+        return $ret;
+    }
 }
 
 /**
