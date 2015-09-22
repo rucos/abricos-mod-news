@@ -64,6 +64,9 @@ Component.entryPoint = function(NS){
             config: {
                 attribute: true,
                 type: 'model:Config'
+            },
+            configSave: {
+                args: ['config']
             }
         },
         ATTRS: {
@@ -86,6 +89,9 @@ Component.entryPoint = function(NS){
                 editor: function(newsid){
                     return this.getURL('ws') + 'newsEditor/NewsEditorWidget/' + (newsid | 0) + '/';
                 }
+            },
+            config: function(){
+                return this.getURL('ws') + 'config/ConfigWidget/';
             }
         }
     });
