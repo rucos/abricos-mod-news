@@ -62,7 +62,8 @@ Component.entryPoint = function(NS){
             this._introEditor = new SYS.Editor({
                 appInstance: this.get('appInstance'),
                 srcNode: tp.gel('introEditor'),
-                content: newsItem.get('intro')
+                content: newsItem.get('intro'),
+                toolbar: SYS.Editor.TOOLBAR_STANDART
             });
 
             this._bodyEditor = new SYS.Editor({
