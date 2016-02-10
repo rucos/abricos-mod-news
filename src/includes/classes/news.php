@@ -31,7 +31,7 @@ class News extends AbricosApplication {
             case "newsList":
                 return $this->NewsListToJSON($d->page);
             case "newsCount":
-                return $this->NewsCountToJSON($d->page);
+                return $this->NewsCountToJSON();
             case "newsItem":
                 return $this->NewsItemToJSON($d->newsid);
             case "newsSave":
@@ -89,7 +89,8 @@ class News extends AbricosApplication {
     }
 
     public function NewsCountToJSON(){
-        $res = $this->NewsCount();
+		$admin = $this->manager->IsAdminRole() ? true : false;
+        $res = $this->NewsCount($admin);
         return $this->ResultToJSON('newsCount', $res);
     }
 
@@ -99,7 +100,7 @@ class News extends AbricosApplication {
         }
 
         $ret = new stdClass();
-        $ret->count = NewsQuery::NewsCount($this->db);
+        $ret->count = NewsQuery::NewsCount($this->db, $admin);
         return $ret;
     }
 

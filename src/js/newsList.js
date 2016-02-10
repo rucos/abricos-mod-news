@@ -13,11 +13,25 @@ Component.entryPoint = function(NS){
     NS.NewsListWidget = Y.Base.create('newsListWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
             this.reloadList();
+			this.countNews();
+        },
+		countNews: function(){
+            this.set('waiting', true);
+            this.get('appInstance').newsCount(function(err, result){
+                this.set('waiting', false);
+	                if (!err){
+	                    this.set('countNews', result.newsCount.count);
+	                }
+                this.renderPaginator();
+            }, this);
         },
         reloadList: function(){
+           	var lib = this.get('appInstance'),
+        		page = lib.getPage();
+        	
             this.set('waiting', true);
-            var page = this.get('page');
-            this.get('appInstance').newsList(page, function(err, result){
+            
+            lib.get('appInstance').newsList(page, function(err, result){
                 this.set('waiting', false);
                 if (!err){
                     this.set('newsList', result.newsList);
@@ -68,12 +82,35 @@ Component.entryPoint = function(NS){
                     this.reloadList();
                 }
             }, this);
+        },
+        renderPaginator: function(){
+        	var tp = this.template,
+        		countNews = this.get('countNews'),
+        		countPage = Math.ceil(countNews / 20),
+        		page = this.get('appInstance').getPage(),
+        		lst = "",
+        		start = Math.max(1, page - 2),
+        		end = Math.min(+page + 2, countPage);
+        		
+        	for(var i = start; i <= end; i++){
+        		lst += tp.replace('liPagePagin', {
+        			cnt: i,
+        			active: i == page ? 'active' : ''
+        		});
+        	}
+        	
+        	tp.setHTML('pag', tp.replace('paginator', {
+        		lipage: lst,
+        		dp: page == 1 ? 'none' : '',
+        		dn: page == countPage ? 'none' : '',
+        		lastpage: countPage,
+        		firstpage: 1
+        	}));
         }
-
     }, {
         ATTRS: {
             component: {value: COMPONENT},
-            templateBlockName: {value: 'widget,table,row,publishButton'},
+            templateBlockName: {value: 'widget,table,row,publishButton,paginator,liPagePagin'},
             page: {value: 1},
             newsList: {value: null}
         },
@@ -106,6 +143,23 @@ Component.entryPoint = function(NS){
                 event: function(e){
                     var newsid = e.target.getData('id') | 0;
                     this.go('news.editor', newsid);
+                }
+            },
+        	changePage: {
+                event: function(e){
+	                	var page =  0,
+	                		type = e.target.getData('type'),
+	                		lib = this.get('appInstance');
+	                	
+	                	switch(type){
+	                		case 'prev': page = lib.getPage(); lib.setPage(--page); break;
+	                		case 'next': page = lib.getPage(); lib.setPage(++page); break;
+	                		case 'curent': 
+	                		case 'first': 
+	                		case 'last': page = e.target.getData('page'); lib.setPage(page); break;
+	                	}
+	                		this.renderPaginator();
+	                			this.reloadList();
                 }
             }
         }

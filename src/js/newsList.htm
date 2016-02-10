@@ -56,3 +56,17 @@
 </a>
 <img id="{i#loading}-{v#id}" class="hide" src="/images/loading.gif"/>
 <span id="{i#published}-{v#id}" class="hide"></span>
+
+<!--{paginator}-->
+<div>
+<ul class="pagination">
+  <li style="display: {v#dp};"><a href="" data-click="changePage" data-type="first" data-page="{v#firstpage}">&laquo;&laquo;</a></li>
+  <li style="display: {v#dp};"><a href="" data-click="changePage" data-type="prev">&lt;&mdash;prev</a></li>
+	{v#lipage}
+  <li style="display: {v#dn};"><a href="" data-click="changePage" data-type="next">next&mdash;&gt;</a></li>
+  <li style="display: {v#dn};"><a href="" data-click="changePage" data-type="last" data-page="{v#lastpage}">&raquo;&raquo;</a></li>
+</ul>
+</div>
+
+<!--{liPagePagin}-->
+<li class="{v#active}" style="display: {v#dli};"><a href="" data-click="changePage" data-page="{v#cnt}" data-type="curent">{v#cnt}</a></li>

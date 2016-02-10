@@ -90,18 +90,24 @@ Component.entryPoint = function(NS){
                     sourceName: tp.getValue('sourceName'),
                     sourceURI: tp.getValue('sourceURI'),
                     published: published ? published.getTime() / 1000 : (new Date()).getTime() / 1000
-                };
-
+                },
+                lib = this.get('appInstance');
+            
             switch(action){
                 case 'publish':
+                	lib.setPage(1);
                     break;
                 case 'draft':
+                	lib.setPage(1);
                     data.published = 0;
                     break;
             }
-
+	        	if(!published && action != 'publish'){
+	       		 	data.published = 0;
+	        	}
             this.set('waiting', true);
-            this.get('appInstance').newsSave(data, function(err, result){
+            
+            lib.newsSave(data, function(err, result){
                 this.set('waiting', false);
                 if (!err){
                     this.go('manager.view');

@@ -104,12 +104,17 @@ class NewsQuery {
         return $db->query_read($sql);
     }
 
-    public static function NewsCount(Ab_Database $db){
+    public static function NewsCount(Ab_Database $db, $admin){
+    	if(!$admin){
+    		$lst = "published>0	AND deldate=0 AND language='".bkstr(Abricos::$LNG)."'";
+    	} else {
+    		$lst = "language='".bkstr(Abricos::$LNG)."'";
+    	}
+    	 
         $sql = "
 			SELECT count( newsid ) AS cnt
 			FROM ".$db->prefix."news
-			WHERE ((deldate=0 AND published>0) OR userid=".bkint(Abricos::$user->id).")
-			    AND language='".bkstr(Abricos::$LNG)."'
+			WHERE ".$lst."
 			LIMIT 1 
 		";
         $row = $db->query_first($sql);

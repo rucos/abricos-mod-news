@@ -67,13 +67,17 @@ Component.entryPoint = function(NS){
             },
             configSave: {
                 args: ['config']
+            },
+            newsCount: {
+            	
             }
         },
         ATTRS: {
             isLoadAppStructure: {value: true},
             NewsItem: {value: NS.NewsItem},
             NewsList: {value: NS.NewsList},
-            Config: {value: NS.Config}
+            Config: {value: NS.Config},
+            curentPage: {value: 1}
         },
         URLS: {
             ws: "#app={C#MODNAMEURI}/wspace/ws/",
