@@ -1,0 +1,40 @@
+.mod-news .newsblock {
+  /*font-size: 13.5px;/**/
+}
+.mod-news .newsblock h3 {
+  position: relative;
+}
+.mod-news .newsblock p {
+  margin: 0;
+}
+.mod-news .newsblock .rssicon {
+  position: absolute;
+  right: 0px;
+}
+.mod-news .newsrow {
+  margin-bottom: 10px;
+}
+.mod-news .lastnews a.title {
+  text-decoration: none;
+}
+.mod-news .lastnews .fullnews {
+  text-align: right;
+}
+.mod-news .lastnews .date {
+  font-weight: bolder;
+  color: #81888F;
+}
+.mod-news dl.newslist dt {
+  color: #81888F;
+  margin-bottom: 3px;
+  padding-left: 5px;
+}
+.mod-news dl.newslist dd {
+  line-height: 135%;
+  margin: 0 0 25px;
+  padding-left: 5px;
+}
+.mod-news dl.newslist a.title {
+  font-weight: bolder;
+  text-decoration: none;
+}

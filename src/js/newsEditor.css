@@ -1,0 +1,6 @@
+.aw-news .newsEditor.isNewNews .forSavedNews {
+  display: none;
+}
+.aw-news .newsEditor.isSavedNews .forNewNews {
+  display: none;
+}
