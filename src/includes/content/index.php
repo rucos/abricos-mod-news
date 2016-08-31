@@ -30,9 +30,8 @@ $dateFormat = $config->date_format;
 $baseUrl = "/".$mod->takelink."/";
 
 $lst = "";
-$newsList = $app->NewsList(1, $limit);
+$newsList = $app->NewsList($page);
 $count = $newsList->Count();
-
 for ($i = 0; $i < $count; $i++){
     $news = $newsList->GetByIndex($i);
     $lst .= Brick::ReplaceVarByData($v['row'], array(

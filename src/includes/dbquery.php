@@ -28,7 +28,7 @@ class NewsQuery {
 				".bkint(Abricos::$user->id).",
 				".TIMENOW.",
 				".TIMENOW.",
-				'".bkint($d->published)."',
+				".bkint($d->published).",
 				'".bkstr($d->title)."',
 				'".bkstr($d->intro)."',
 				'".bkstr($d->body)."',
@@ -82,7 +82,14 @@ class NewsQuery {
      * @param int $limit
      * @return int
      */
-    public static function NewsList(Ab_Database $db, $page = 1, $limit = 20){
+    public static function NewsList(Ab_Database $db, $page = 1, $limit, $admin){
+    	
+    	if(!$admin){
+    		$lst = "published>0	AND deldate=0 AND language='".bkstr(Abricos::$LNG)."'";
+    	} else {
+    		$lst = "language='".bkstr(Abricos::$LNG)."'";
+    	}
+    	
         $from = $limit * (max($page, 1) - 1);
         $sql = "
 			SELECT
@@ -93,18 +100,18 @@ class NewsQuery {
 				n.sourceName,
 				n.sourceURI,
 				n.dateline,
-				n.published
+				n.published,
+        		n.deldate
 			FROM ".$db->prefix."news n
-			WHERE (published>0 OR userid=".bkint(Abricos::$user->id).")
-			        AND deldate=0
-			        AND language='".bkstr(Abricos::$LNG)."'
-			ORDER BY dateline DESC
+			WHERE ".$lst."
+			ORDER BY n.published DESC
 			LIMIT ".$from.",".bkint($limit)."
 		";
         return $db->query_read($sql);
     }
 
     public static function NewsCount(Ab_Database $db, $admin){
+    	
     	if(!$admin){
     		$lst = "published>0	AND deldate=0 AND language='".bkstr(Abricos::$LNG)."'";
     	} else {
@@ -124,8 +131,12 @@ class NewsQuery {
     public static function NewsRemove(Ab_Database $db, $newsid){
         $sql = "
 			UPDATE ".$db->prefix."news 
-			SET deldate=".TIMENOW."
+			SET 
+				deldate=".TIMENOW.",
+				published=0,
+				upddate=".TIMENOW."
 			WHERE newsid=".bkint($newsid)."
+			LIMIT 1
 		";
         $db->query_write($sql);
     }
@@ -133,12 +144,73 @@ class NewsQuery {
     public static function NewsPublish(Ab_Database $db, $newsid){
         $sql = "
 			UPDATE ".$db->prefix."news
-			SET published='".TIMENOW."'
-			WHERE newsid=".bkint($newsid)." 
+			SET 
+				published='".TIMENOW."',
+				upddate=".TIMENOW."
+			WHERE newsid=".bkint($newsid)."
+			LIMIT 1
 		";
         $db->query_write($sql);
     }
+    
 
+    public static function NewsRestore(Ab_Database $db, $newsid){
+    	$sql = "
+			UPDATE ".$db->prefix."news
+			SET 
+				deldate=0,
+				upddate=".TIMENOW."
+			WHERE newsid=".bkint($newsid)."
+			LIMIT 1
+		";
+    	$db->query_write($sql);
+    }
+
+    public static function NewsFilterList(Ab_Database $db, $nameFilter, $page, $limit){
+    	
+    	switch($nameFilter){
+    		case "unPublic":
+    			$where = "published=0 AND deldate=0";
+    				break;
+    		case "remove":
+    			$where = "deldate>0";
+    				break;
+    		default: 
+    			return false;
+    	}
+    	
+    	$from = $limit * (max($page, 1) - 1);
+    	 
+    	$sql = "
+			SELECT
+				newsid as id,
+				title,
+				intro,
+				imageid,
+				sourceName,
+				sourceURI,
+				dateline,
+				published,
+        		deldate
+			FROM ".$db->prefix."news
+			WHERE ".$where." 
+			ORDER BY upddate DESC
+			LIMIT ".$from.",".$limit."
+		";
+    	return $db->query_read($sql);
+    }
+    
+    public static function NewsCountFilter(Ab_Database $db, $where){
+    	 
+    	$sql = "
+			SELECT count( newsid ) AS cnt
+			FROM ".$db->prefix."news
+			WHERE ".$where."
+			LIMIT 1
+		";
+    	$row = $db->query_first($sql);
+    	return $row['cnt'];
+    }
 }
 
 ?>

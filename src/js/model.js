@@ -15,10 +15,6 @@ Component.entryPoint = function(NS){
 
     NS.NewsList = Y.Base.create('newsList', SYS.AppModelList, [], {
         appItem: NS.NewsItem
-    }, {
-        ATTRS: {
-            page: {value: 1}
-        }
     });
 
     NS.Config = Y.Base.create('config', SYS.AppModel, [], {

@@ -30,8 +30,6 @@ class News extends AbricosApplication {
         switch ($d->do){
             case "newsList":
                 return $this->NewsListToJSON($d->page);
-            case "newsCount":
-                return $this->NewsCountToJSON();
             case "newsItem":
                 return $this->NewsItemToJSON($d->newsid);
             case "newsSave":
@@ -39,13 +37,13 @@ class News extends AbricosApplication {
             case "newsRemove":
                 return $this->NewsRemoveToJSON($d->newsid);
             case "newsPublish":
-                return $this->NewsPublishToJSON($d->newsid);
-
+                return $this->NewsPublishToJSON($d->objData);
             case "config":
                 return $this->ConfigToJSON();
             case "configSave":
                 return $this->ConfigSaveToJSON($d->config);
-
+            case "newsFilterList":
+            	return $this->NewsFilterListToJSON($d->obj);
         }
         return null;
     }
@@ -57,15 +55,29 @@ class News extends AbricosApplication {
     }
 
     public function NewsListToJSON($page){
-        $res = $this->NewsList($page);
-        return $this->ResultToJSON('newsList', $res);
+    	if($this->manager->IsAdminRole()){
+    		$res = $this->NewsList($page, false, true);
+    		$count = $this->NewsCount(true);
+    	} else {
+    		return false;
+    	}
+    	
+        return $this->ImplodeJSON(
+        		$this->ResultToJSON('newsList', $res),
+        		$this->ResultToJSON('newsCount', $count)
+        );
     }
 
     /**
      * @return NewsList
      */
-    public function NewsList($page, $limit = 20){
+    public function NewsList($page, $limit = 0, $admin = false){
+    	if(!$limit){
+    		$limit = $this->GetLimit();    		
+    	}
+    	
         $key = $page."_".$limit;
+        
         if (!isset($this->_cache['NewsList'])){
             $this->_cache['NewsList'] = array();
         }
@@ -74,36 +86,84 @@ class News extends AbricosApplication {
         }
 
         if (!$this->manager->IsViewRole()){
-            return 403;
+        	return 403;
         }
-
         /** @var NewsList $list */
         $list = $this->models->InstanceClass('NewsList');
-        $list->page = $page;
-
-        $rows = NewsQuery::NewsList($this->db, $page, $limit);
+        
+        $rows = NewsQuery::NewsList($this->db, $page, $limit, $admin);
         while (($d = $this->db->fetch_array($rows))){
             $list->Add($this->models->InstanceClass('NewsItem', $d));
         }
         return $this->_cache['NewsList'][$key] = $list;
     }
-
-    public function NewsCountToJSON(){
-		$admin = $this->manager->IsAdminRole() ? true : false;
-        $res = $this->NewsCount($admin);
-        return $this->ResultToJSON('newsCount', $res);
+    
+    public function NewsFilterListToJSON($d){
+    	if($this->manager->IsAdminRole()){
+    		$res = $this->NewsFilterList($d);
+    			switch($d->nameFilter){
+    				case "unPublic":
+    					$count = $this->NewsCountFilter("published=0 AND deldate=0");
+    						break;
+    				case "remove":
+    					$count = $this->NewsCountFilter("deldate>0");
+    						break;
+    				default:
+    					return false;
+    			}
+    	} else {
+    		return false;
+    	}
+    	 
+    	return $this->ImplodeJSON( 
+    		$this->ResultToJSON('newsFilterList', $res),
+    		$this->ResultToJSON('newsCount', $count)
+    	);
     }
-
-    public function NewsCount(){
+    
+    public function NewsFilterList($d){
+    	$d->page = intval($d->page);
+    	$limit = $this->GetLimit();
+    	
+    	$key = $d->page."_".$limit;
+    	
+    	if (isset($this->_cache['NewsList'][$key][$d->nameFilter])){
+    		return $this->_cache['NewsList'][$key][$d->nameFilter];
+    	}
+    
+    	/** @var NewsList $list */
+    	$list = $this->models->InstanceClass('NewsList');
+    
+    	$rows = NewsQuery::NewsFilterList($this->db, $d->nameFilter, $d->page, $limit);
+    	while (($dd = $this->db->fetch_array($rows))){
+    		$list->Add($this->models->InstanceClass('NewsItem', $dd));
+    	}
+    	return $this->_cache['NewsList'][$key][$d->nameFilter] = $list;
+    }
+    
+    public function NewsCount($admin = false){
         if (!$this->manager->IsViewRole()){
             return 403;
         }
 
         $ret = new stdClass();
         $ret->count = NewsQuery::NewsCount($this->db, $admin);
+        
+        $ret->limit = $this->GetLimit();
         return $ret;
     }
 
+    public function NewsCountFilter($where){
+    	if (!$this->manager->IsAdminRole()){
+    		return 403;
+    	}
+    
+    	$ret = new stdClass();
+    	$ret->count = NewsQuery::NewsCountFilter($this->db, $where);
+    	$ret->limit = $this->GetLimit();
+    	return $ret;
+    }
+    
     public function NewsItemToJSON($newsid){
         $res = $this->NewsItem($newsid);
         return $this->ResultToJSON('newsItem', $res);
@@ -156,7 +216,6 @@ class News extends AbricosApplication {
         $d->sourceURI = $utmf->Parser($d->sourceURI);
 
         $d->published = intval($d->published);
-
         if ($d->id === 0){
             $d->id = NewsQuery::NewsAppend(Abricos::$db, $d);
         } else {
@@ -168,28 +227,32 @@ class News extends AbricosApplication {
         return $ret;
     }
 
-    public function NewsPublishToJSON($newsid){
-        $res = $this->NewsPublish($newsid);
+    public function NewsPublishToJSON($d){
+        $res = $this->NewsPublish($d);
         return $this->ImplodeJSON(
-            $this->NewsItemToJSON($newsid),
+            $this->NewsItemToJSON($d->newsid),
             $this->ResultToJSON('newsPublish', $res)
         );
     }
 
-    public function NewsPublish($newsid){
+    public function NewsPublish($d){
         if (!$this->manager->IsAdminRole()){
             return 403;
         }
-        $news = $this->NewsItem($newsid);
+        $news = $this->NewsItem($d->newsid);
         if (empty($news)){
             return 404;
         }
-        NewsQuery::NewsPublish(Abricos::$db, $newsid);
-
+        if($d->act == 0){
+        	NewsQuery::NewsPublish(Abricos::$db, $d->newsid);
+        } else {
+        	NewsQuery::NewsRestore(Abricos::$db, $d->newsid);
+        }
+        
         $this->CacheClear();
 
         $ret = new stdClass();
-        $ret->newsid = $newsid;
+        $ret->newsid = $d->newsid;
         return $ret;
 
     }
@@ -265,6 +328,11 @@ class News extends AbricosApplication {
         $phs->Set("page_count", intval($sd->page_count));
 
         Abricos::$phrases->Save();
+    }
+    
+    public function GetLimit(){
+    	$phs = NewsModule::$instance->GetPhrases();
+   		return $phs->Get("page_count")->value;
     }
 
 }

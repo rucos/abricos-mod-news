@@ -37,6 +37,10 @@
     "published": {
       "type": "date",
       "json": "pub"
+    },
+    "deldate": {
+      "type": "date",
+      "json": "del"
     }
   }
 }

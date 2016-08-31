@@ -27,6 +27,30 @@ Component.entryPoint = function(NS){
             this._cache = {
                 newsList: {}
             };
+        },
+        getPage: function(){
+        	var filter = this.get('filter');
+        	
+        	switch(filter){
+        		case "all": 
+        			return this.get('curentPage');
+        		case "unPublic": 
+        			return this.get('curentPagePublic');
+        		case "remove": 
+        			return this.get('curentPageRemove');
+        	}
+        },
+        setPage: function(page){
+        	var filter = this.get('filter');
+        	
+        	switch(filter){
+	    		case "all": 
+	    			return this.set('curentPage', page);
+	    		case "unPublic": 
+	    			return this.set('curentPagePublic', page);
+	    		case "remove": 
+	    			return this.set('curentPageRemove', page);
+        	}
         }
     }, [], {
         REQS: {
@@ -56,7 +80,7 @@ Component.entryPoint = function(NS){
                 args: ['news']
             },
             newsPublish: {
-                args: ['newsid']
+                args: ['objData']
             },
             newsRemove: {
                 args: ['newsid']
@@ -70,6 +94,11 @@ Component.entryPoint = function(NS){
             },
             newsCount: {
             	
+            },
+            newsFilterList: {
+                args: ['obj'],
+                attribute: false,
+                type: 'modelList:NewsList'
             }
         },
         ATTRS: {
@@ -77,7 +106,10 @@ Component.entryPoint = function(NS){
             NewsItem: {value: NS.NewsItem},
             NewsList: {value: NS.NewsList},
             Config: {value: NS.Config},
-            curentPage: {value: 1}
+            curentPage: {value: 1},
+            curentPagePublic: {value: 1},
+            curentPageRemove: {value: 1},
+            filter: {value: 'all'}
         },
         URLS: {
             ws: "#app={C#MODNAMEURI}/wspace/ws/",

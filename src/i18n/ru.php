@@ -8,7 +8,7 @@ return array(
     ),
     'brick' => array(
         'lastnews' => array(
-            "1" => "Все новости"
+            "1" => "Архив новостей"
         ),
         'newsblock' => array(
             "1" => "Канал новостей в формате RSS",

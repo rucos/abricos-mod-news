@@ -13,8 +13,10 @@ Component.entryPoint = function(NS){
     NS.ManagerWidget = Y.Base.create('managerWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance, options){
             var tp = this.template;
+            
             this.listWidget = new NS.NewsListWidget({
-                srcNode: tp.gel('list')
+                srcNode: tp.gel('list'),
+                pageCurrent: this.get('page')
             });
         },
         destructor: function(){
@@ -26,6 +28,9 @@ Component.entryPoint = function(NS){
         ATTRS: {
             component: {value: COMPONENT},
             templateBlockName: {value: 'widget'}
+        },
+        CLICKS: {
+
         }
     });
 };

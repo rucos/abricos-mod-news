@@ -124,7 +124,7 @@ Component.entryPoint = function(NS){
         CLICKS: {
             save: 'save',
             publish: {
-                event: function(){
+                event: function(e){
                     this.save('publish');
                 }
             },

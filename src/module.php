@@ -28,6 +28,8 @@ class NewsModule extends Ab_Module {
         $this->takelink = "news";
 
         $this->permission = new NewsPermission($this);
+		
+		$this->GetPhrases()->Set("page_count", 20);
     }
 
     /**

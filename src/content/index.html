@@ -15,12 +15,16 @@
 		<a class="title" href="{v#link}">{v#title}</a>
 		{v#intro}
 	</dd>
+	<dd>
+		<a class="title" href="{v#link}">Подробнее</a>
+	</dd>
+	<hr>
 [/bkvar]
-
 
 [*]-->
 <div class="mod-news">
     <h2>{#content.index.1}</h2>
+    [mod]sitemap:paginator[/mod]
     <dl class="newslist">[bkvar]lst[/bkvar]</dl>
     [mod]sitemap:paginator[/mod]
 </div>
